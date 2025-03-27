@@ -1,0 +1,19 @@
+{
+    "balance": "Guthaben",
+    "blockchain": "Blockchain",
+    "copy_seed": "Seed kopieren",
+    "create_wallet": "Wallet erstellen",
+    "fee": "Gebühr",
+    "import_wallet": "Importieren",
+    "receive": "Empfangen",
+    "receiver": "Empfänger",
+    "restore_wallet": "Wallet wiederherstellen",
+    "restore_wallet_from_seed": "Wallet mit Seed wiederherstellen",
+    "scan": "Scan",
+    "send": "Senden",
+    "terms_and_conditions": "Nutzungsbedinungen",
+    "your_seed": "Dein dEURO-Seed",
+    "your_seed_disclaimer": "Dies ist Ihr einzigartiger und privater Seed und der einzige Weg, um Ihre Wallet im Falle eines Verlusts oder einer Fehlfunktion wiederherzustellen.",
+    "welcome_deuro_wallet": "Willkommen im \ndEURO Wallet",
+    "welcome_disclaimer": "Durch das Erstellen oder Importieren einer dEuro Wallet akzeptieren Sie unsere"
+}

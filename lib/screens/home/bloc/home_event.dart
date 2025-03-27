@@ -1,0 +1,21 @@
+part of 'home_bloc.dart';
+
+sealed class HomeEvent extends Equatable {
+  const HomeEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class LoadCurrentWalletEvent extends HomeEvent {
+  const LoadCurrentWalletEvent();
+}
+
+final class LoadWalletEvent extends HomeEvent {
+  const LoadWalletEvent(this.wallet);
+
+  final Wallet wallet;
+
+  @override
+  List<Object> get props => [wallet];
+}

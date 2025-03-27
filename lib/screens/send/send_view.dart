@@ -1,0 +1,147 @@
+import 'package:deuro_wallet/generated/i18n.dart';
+import 'package:deuro_wallet/models/blockchain.dart';
+import 'package:deuro_wallet/screens/send/bloc/send_bloc.dart';
+import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/widgets/amount_info_row.dart';
+import 'package:deuro_wallet/widgets/blockchain_selector.dart';
+import 'package:deuro_wallet/widgets/number_pad.dart';
+import 'package:deuro_wallet/widgets/standard_slide_button_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+class SendView extends StatelessWidget {
+  const SendView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () => context.pop(),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: BlocBuilder<SendBloc, SendState>(builder: (context, state) {
+          return Column(children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 26, right: 26, top: 26, bottom: 10),
+              child: TextField(
+                onChanged: (receiver) =>
+                    context.read<SendBloc>().add(ReceiverChanged(receiver)),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.deny(RegExp(r" ")),
+                ],
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: S.of(context).receiver,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: DEuroColors.dEuroBlue),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: DEuroColors.dEuroBlue),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+                // suffix: SizedBox(
+                //   height: 55,
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                //     child: Row(
+                //       children: [
+                //         if (DeviceInfo.instance.isMobile)
+                //           IconButton(
+                //             onPressed: () => _presentQRScanner(context),
+                //             icon: const Icon(Icons.qr_code),
+                //           ),
+                //         IconButton(
+                //           onPressed: _openAddressBook,
+                //           icon: const Icon(CupertinoIcons.book),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+              ),
+            ),
+            if (state.receiver.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(left: 26, right: 26, top: 10),
+                child: Text(
+                  "${state.amount.toString()} €",
+                  style: const TextStyle(
+                      fontSize: 60, color: Colors.white, fontFamily: "Lato"),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Spacer(),
+              BlockchainSelector(
+                onPressed: () => context
+                    .read<SendBloc>()
+                    .add(ChainChanged(Blockchain.optimism)),
+                blockchain: state.blockchain,
+                padding: const EdgeInsets.only(left: 26, right: 26, bottom: 10),
+              ),
+              AmountInfoRow(
+                padding: const EdgeInsets.only(left: 26, right: 26, bottom: 10),
+                title: S.of(context).fee,
+                amountString: state.fee,
+                currencySymbol: state.blockchain.nativeSymbol,
+              ),
+              NumberPad(
+                onNumberPressed: (index) =>
+                    context.read<SendBloc>().add(AmountChangedAdd(index)),
+                onDeletePressed: () =>
+                    context.read<SendBloc>().add(AmountChangedDelete()),
+                onDecimalPressed: () =>
+                    context.read<SendBloc>().add(AmountChangedDecimal()),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 26, right: 26, bottom: 10),
+                child: StandardSlideButton(
+                  onSlideComplete: () =>
+                      context.read<SendBloc>().add(SendSubmitted()),
+                  buttonText: S.of(context).send,
+                ),
+              )
+            ],
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: ElevatedButton(
+            //     onPressed: () {},
+            //     style: kFullwidthPrimaryButtonStyle,
+            //     child: Text(
+            //       S.of(context).send,
+            //       textAlign: TextAlign.center,
+            //       style: kPrimaryButtonTextStyle,
+            //     ),
+            //   ),
+            // ),
+            // Observer(
+            //   builder: (_) => Padding(
+            //     padding: const EdgeInsets.only(left: 26, right: 26),
+            //     child: AmountInfoRow(
+            //       title: S.of(context).estimated_fee,
+            //       amount: BigInt.from(widget.sendVM.estimatedFee),
+            //       currencySymbol: widget.sendVM.spendCurrency.blockchain.nativeSymbol,
+            //     ),
+            //   ),
+            // ),
+          ]);
+        }),
+      ),
+    );
+  }
+}
