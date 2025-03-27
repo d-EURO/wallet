@@ -1,4 +1,4 @@
-package dev.konsti.deuro_wallet
+package eu.deurowallet.wallet
 
 import io.flutter.embedding.android.FlutterActivity
 
