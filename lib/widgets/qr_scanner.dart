@@ -1,0 +1,220 @@
+import 'dart:developer' as dev;
+import 'dart:typed_data';
+
+import 'package:deuro_wallet/generated/i18n.dart';
+import 'package:fast_scanner/fast_scanner.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+typedef FuncValidateQR = bool Function(String? code, List<int>? rawBytes);
+
+var isQrScannerShown = false;
+
+class QRData {
+  final String? value;
+  final Uint8List data;
+
+  const QRData(this.value, this.data);
+
+  QRData.fromBarcode(Barcode barcode)
+      : value = barcode.rawValue,
+        data = barcode.rawBytes!;
+}
+
+bool _defaultQRValidate(String? code, List<int>? rawBytes) =>
+    rawBytes?.isNotEmpty == true;
+
+Future<QRData?> presentQRScanner(BuildContext context,
+    [FuncValidateQR? validateQR]) async {
+  isQrScannerShown = true;
+  try {
+    final result = await Navigator.of(context).push<QRData>(
+      MaterialPageRoute(
+        builder: (_) => QRScanner(validateQR: validateQR ?? _defaultQRValidate),
+      ),
+    );
+    isQrScannerShown = false;
+    return result;
+  } catch (e) {
+    isQrScannerShown = false;
+    rethrow;
+  }
+}
+
+class QRScanner extends StatefulWidget {
+  const QRScanner({super.key, required this.validateQR});
+
+  final FuncValidateQR validateQR;
+
+  @override
+  State<QRScanner> createState() => _QRScannerState();
+}
+
+class _QRScannerState extends State<QRScanner> {
+  bool popped = false;
+
+  void _handleBarcode(BarcodeCapture barcodes) {
+    try {
+      _handleBarcodeInternal(barcodes);
+    } catch (e) {
+      // showPopUp<void>(
+      //   context: context,
+      //   builder: (context) {
+      //     return AlertWithOneAction(
+      //       alertTitle: S.of(context).error,
+      //       alertContent: S.of(context).error_dialog_content,
+      //       buttonText: 'ok',
+      //       buttonAction: () {
+      //         Navigator.of(context).pop();
+      //       },
+      //     );
+      //   },
+      // );
+      dev.log("QRCode Scanner Error", error: e);
+    }
+  }
+
+  void _handleBarcodeInternal(BarcodeCapture barcodes) {
+    for (final barcode in barcodes.barcodes) {
+      dev.log(barcode.rawBytes.toString());
+      if (!widget.validateQR(barcode.rawValue, barcode.rawBytes)) continue;
+      if (mounted && !popped) {
+        setState(() => popped = true);
+        Navigator.of(context).pop(QRData.fromBarcode(barcode));
+      }
+    }
+  }
+
+  final MobileScannerController ctrl = MobileScannerController();
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          children: [
+            MobileScanner(onDetect: _handleBarcode, controller: ctrl),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: IconButton(
+                  style: IconButton.styleFrom(backgroundColor: Colors.black26),
+                  padding: const EdgeInsets.all(10),
+                  icon: const Icon(
+                    Icons.close,
+                    size: 25,
+                    color: Colors.white,
+                  ),
+                  onPressed: context.pop,
+                ),
+              ),
+            ),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomPaint(
+                    foregroundPainter: const BorderPainter(),
+                    child: SizedBox(
+                      width: 200,
+                      height: 200,
+                      child: Center(
+                          child: Text(
+                        S.of(context).scan_qr_code,
+                        style: const TextStyle(fontSize: 20, color: Colors.white),
+                      )),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: ToggleFlashlightButton(controller: ctrl),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+class BorderPainter extends CustomPainter {
+  const BorderPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    double sh = size.height; // for convenient shortage
+    double sw = size.width; // for convenient shortage
+    double cornerSide = sh * 0.23; // desirable value for corners side
+
+    Paint paint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 10
+      ..style = PaintingStyle.stroke
+      // ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round;
+
+    Path path = Path()
+      ..moveTo(cornerSide, 0)
+      // ..lineTo(0, 0)..lineTo(0, cornerSide)
+      ..conicTo(0, 0, 0, cornerSide, 30)
+      ..moveTo(0, sh - cornerSide)
+      // ..lineTo(0, sh)..lineTo(cornerSide, sh)
+      ..conicTo(0, sh, cornerSide, sh, 30)
+      ..moveTo(sw - cornerSide, sh)
+      // ..lineTo(sw, sh)..lineTo(sw, sh - cornerSide)
+      ..conicTo(sw, sh, sw, sh - cornerSide, 30)
+      ..moveTo(sw, cornerSide)
+      // ..lineTo(sw, 0)..lineTo(sw - cornerSide, 0);
+      ..conicTo(sw, 0, sw - cornerSide, 0, 30);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(BorderPainter oldDelegate) => false;
+
+  @override
+  bool shouldRebuildSemantics(BorderPainter oldDelegate) => false;
+}
+
+class ToggleFlashlightButton extends StatelessWidget {
+  const ToggleFlashlightButton({required this.controller, super.key});
+
+  final MobileScannerController controller;
+
+  @override
+  Widget build(BuildContext context) => ValueListenableBuilder(
+        valueListenable: controller,
+        builder: (context, state, child) {
+          if (!state.isInitialized || !state.isRunning) {
+            return const SizedBox.shrink();
+          }
+
+          switch (state.torchState) {
+            case TorchState.off:
+              return IconButton(
+                style: IconButton.styleFrom(backgroundColor: Colors.black26),
+                padding: const EdgeInsets.all(10),
+                icon: const Icon(
+                  Icons.flashlight_off,
+                  size: 25,
+                  color: Colors.white,
+                ),
+                onPressed: controller.toggleTorch,
+              );
+            case TorchState.on:
+              return IconButton(
+                style: IconButton.styleFrom(backgroundColor: Colors.black26),
+                padding: const EdgeInsets.all(10),
+                icon: const Icon(
+                  Icons.flashlight_on,
+                  size: 25,
+                  color: Colors.white,
+                ),
+                onPressed: controller.toggleTorch,
+              );
+            default:
+              return const SizedBox.shrink();
+          }
+        },
+      );
+}

@@ -1,6 +1,7 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/packages/utils/device_info.dart';
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/widgets/qr_scanner.dart';
 import 'package:deuro_wallet/widgets/vertical_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -43,7 +44,7 @@ class ActionBar extends StatelessWidget {
                     if (DeviceInfo.instance.isMobile)
                       Expanded(
                         child: VerticalIconButton(
-                          // onPressed: () => _presentQRReader(context),
+                          onPressed: () => presentQRScanner(context),
                           icon: const Icon(
                             Icons.qr_code,
                             color: DEuroColors.dEuroGold,

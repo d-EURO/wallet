@@ -1,8 +1,9 @@
 import 'package:bip39/src/wordlists/english.dart' as wordlist;
-import 'package:deuro_wallet/packages/service/app_store.dart';
-import 'package:deuro_wallet/packages/service/balance_service.dart';
 import 'package:deuro_wallet/packages/service/wallet_service.dart';
+import 'package:deuro_wallet/packages/wallet/seedqr.dart';
 import 'package:deuro_wallet/packages/wallet/wallet.dart';
+import 'package:deuro_wallet/widgets/qr_scanner.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RestoreWalletState {
@@ -16,12 +17,10 @@ class RestoreWalletState {
 }
 
 class RestoreWalletCubit extends Cubit<RestoreWalletState> {
-  RestoreWalletCubit(this._appStore, this._walletService, this._balanceService)
+  RestoreWalletCubit(this._walletService)
       : super(RestoreWalletState(false, false, false));
 
-  final AppStore _appStore;
   final WalletService _walletService;
-  final BalanceService _balanceService;
 
   void restoreWallet(String seed) async {
     emit(RestoreWalletState(state.isSeedReady, true, false));
@@ -42,6 +41,34 @@ class RestoreWalletCubit extends Cubit<RestoreWalletState> {
       emit(RestoreWalletState(true, state.isLoading, false));
     } else {
       emit(RestoreWalletState(false, state.isLoading, false));
+    }
+  }
+
+  Future<void> restoreWalletFromSeedQR(BuildContext context) async {
+    if (context.mounted) {
+      emit(RestoreWalletState(state.isSeedReady, true, false));
+
+      final data = await presentQRScanner(
+        context,
+        (String? code, List<int>? rawBytes) =>
+            rawBytes?.isNotEmpty == true && isSeedQr(code ?? "") ||
+            isCompactSeedQr(rawBytes!),
+      );
+
+      String? seed;
+      if (isSeedQr(data?.value ?? "")) {
+        seed = getSeedFromSeedQr(data!.value!);
+      } else if (isCompactSeedQr(data?.data ?? [])) {
+        seed = getSeedFromCompactSeedQr(data!.data);
+      }
+
+      if (seed != null) {
+        final wallet =
+            await _walletService.restoreWallet("Obi-Wallet-Kenobi", seed);
+        emit(RestoreWalletState(true, false, true, wallet));
+      } else {
+        emit(RestoreWalletState(state.isSeedReady, false, false));
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:deuro_wallet/di.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
+import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/screens/send/bloc/send_bloc.dart';
 import 'package:deuro_wallet/screens/send/send_view.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ class SendPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => SendBloc(getIt<AppStore>()),
+    create: (_) => SendBloc(getIt<AppStore>(), dEUROAsset),
     child: SendView(),
   );
 }

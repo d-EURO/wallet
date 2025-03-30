@@ -1,8 +1,14 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 
+import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
+import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
+import 'package:deuro_wallet/packages/wallet/create_transaction.dart';
+import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
+import 'package:deuro_wallet/packages/wallet/transaction_priority.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,7 +16,7 @@ part 'send_event.dart';
 part 'send_state.dart';
 
 class SendBloc extends Bloc<SendEvent, SendState> {
-  SendBloc(this._appStore) : super(SendState()) {
+  SendBloc(this._appStore, this._asset) : super(SendState()) {
     on<ReceiverChanged>(_onReceiverChanged);
     on<AmountChangedAdd>(_onAmountAdd);
     on<AmountChangedDecimal>(_onAmountDecimal);
@@ -29,6 +35,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
   }
 
   final AppStore _appStore;
+  final Asset _asset;
 
   Timer? _feeTimer;
 
@@ -67,12 +74,26 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
   Future<void> _onSubmitted(
       SendSubmitted event, Emitter<SendState> emit) async {
-    if (state.isValid) {
+
+    if (state.receiver.isEthereumAddress) {
       emit(state.copyWith(status: SendStatus.inProgress));
       try {
+        final transaction = await createERC20Transaction(
+          _appStore.getClient(state.blockchain.chainId),
+          currentAccount: _appStore.wallet.currentAccount.primaryAddress,
+          receiveAddress: state.receiver,
+          amount: parseFixed(state.amount, _asset.decimals),
+          contractAddress: _asset.address,
+          chainId: state.blockchain.chainId,
+          priority: TransactionPriority.slow,
+        );
+
+        final id = await transaction();
+        dev.log(id);
         // ToDo: Perform Send
         emit(state.copyWith(status: SendStatus.success));
-      } catch (_) {
+      } catch (e) {
+        dev.log("Error during send!", error: e);
         emit(state.copyWith(status: SendStatus.failure));
       }
     }
