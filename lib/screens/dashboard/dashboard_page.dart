@@ -7,7 +7,6 @@ import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/screens/dashboard/bloc/aggregated_balance_cubit.dart';
 import 'package:deuro_wallet/screens/dashboard/bloc/blance_cubit.dart';
 import 'package:deuro_wallet/screens/dashboard/widgets/balance_section.dart';
-import 'package:deuro_wallet/widgets/action_bar.dart';
 import 'package:deuro_wallet/widgets/balance_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,6 +56,7 @@ class DashboardPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
+          top: false,
           child: PopScope(
             canPop: false,
             child: SizedBox(
@@ -134,7 +134,6 @@ class DashboardPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        ActionBar()
                       ],
                     ),
                   ),

@@ -3,9 +3,11 @@
     "blockchain": "Blockchain",
     "copy_seed": "Copy seed",
     "create_wallet": "Create Wallet",
+    "deposit": "Deposit",
     "fee": "Fee",
     "import_wallet": "Import",
     "or": "Or",
+    "pay_scan": "Pay • Scan",
     "receive": "Receive",
     "receiver": "Receiver",
     "restore_wallet": "Restore wallet",
@@ -20,5 +22,6 @@
     "your_seed": "Your dEURO-seed",
     "your_seed_disclaimer": "This is your unique and private seed and it is the only way to recover your wallet in case of loss or malfunction.",
     "welcome_deuro_wallet": "Welcome in the\ndEURO Wallet",
-    "welcome_disclaimer": "By creating of restoring a dEuro Wallet you agree to our"
+    "welcome_disclaimer": "By creating of restoring a dEuro Wallet you agree to our",
+    "withdraw": "Withdraw"
 }

@@ -3,9 +3,11 @@
     "blockchain": "Blockchain",
     "copy_seed": "Seed kopieren",
     "create_wallet": "Wallet erstellen",
+    "deposit": "Einzahlen",
     "fee": "Gebühr",
     "import_wallet": "Importieren",
     "or": "Oder",
+    "pay_scan": "Zahlen • Scan",
     "receive": "Empfangen",
     "receiver": "Empfänger",
     "restore_wallet": "Wallet wiederherstellen",
@@ -19,5 +21,6 @@
     "your_seed": "Dein dEURO-Seed",
     "your_seed_disclaimer": "Dies ist Ihr einzigartiger und privater Seed und der einzige Weg, um Ihre Wallet im Falle eines Verlusts oder einer Fehlfunktion wiederherzustellen.",
     "welcome_deuro_wallet": "Willkommen im \ndEURO Wallet",
-    "welcome_disclaimer": "Durch das Erstellen oder Importieren einer dEuro Wallet akzeptieren Sie unsere"
+    "welcome_disclaimer": "Durch das Erstellen oder Importieren einer dEuro Wallet akzeptieren Sie unsere",
+    "withdraw": "Auszahlen"
 }
