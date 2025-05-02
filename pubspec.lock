@@ -230,6 +230,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.7"
+  dartz:
+    dependency: transitive
+    description:
+      name: dartz
+      sha256: e6acf34ad2e31b1eb00948692468c30ab48ac8250e0f0df661e29f12dd252168
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.1"
+  dio:
+    dependency: transitive
+    description:
+      name: dio
+      sha256: "253a18bbd4851fecba42f7343a1df3a9a4c1d31a2c1b37e221086b4fa8c8dbc9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.8.0+1"
+  dio_web_adapter:
+    dependency: transitive
+    description:
+      name: dio_web_adapter
+      sha256: "7586e476d70caecaf1686d21eee7247ea43ef5c345eab9e0cc3583ff13378d78"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   drift:
     dependency: "direct main"
     description:
@@ -277,6 +301,15 @@ packages:
       sha256: "5b84e2273fd45e8713d885577bea612aec237cff6971720087d11036a57244cf"
       url: "https://pub.dev"
     source: hosted
+    version: "1.0.1"
+  etherscan_api:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: up-to-date-dependecies
+      resolved-ref: d58b647032aacb6bd328fecbc9367d884d47569f
+      url: "https://github.com/konstantinullrich/etherscan_api"
+    source: git
     version: "1.0.1"
   fake_async:
     dependency: transitive
@@ -499,6 +532,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: be4b23575aac7ebf01f225a241eb7f6b5641eeaf43c6a8613510fc2f8cf187d1
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.0"
   logging:
     dependency: transitive
     description:
