@@ -23,11 +23,11 @@ class BalanceSection extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.only(left: 16, right: 16, top: 10),
                 child: Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(right: 5),
+                      padding: EdgeInsets.only(right: 10),
                       child: ActionButton(
                         icon: Icons.credit_card,
                         label: S.of(context).deposit,

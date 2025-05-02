@@ -2,7 +2,10 @@ import 'package:deuro_wallet/models/balance.dart';
 import 'package:deuro_wallet/packages/utils/fast_hash.dart';
 
 class Asset {
-  int get id => fastHash("$chainId:$address");
+  static int getId(int chainId, String address) =>
+      fastHash("$chainId:$address");
+
+  int get id => getId(chainId, address);
 
   final int chainId;
   final String address;

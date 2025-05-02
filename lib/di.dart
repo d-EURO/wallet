@@ -1,9 +1,11 @@
 import 'package:deuro_wallet/packages/repository/asset_repository.dart';
 import 'package:deuro_wallet/packages/repository/balance_repository.dart';
 import 'package:deuro_wallet/packages/repository/settings_repository.dart';
+import 'package:deuro_wallet/packages/repository/transaction_repository.dart';
 import 'package:deuro_wallet/packages/repository/wallet_repository.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/service/balance_service.dart';
+import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
 import 'package:deuro_wallet/packages/service/wallet_service.dart';
 import 'package:deuro_wallet/packages/storage/database.dart';
 import 'package:deuro_wallet/router.dart';
@@ -37,6 +39,8 @@ void setupRepositories() {
   getIt.registerFactory(() => BalanceRepository(getIt<AppDatabase>()));
   getIt.registerFactory(() => AssetRepository(getIt<AppDatabase>()));
   getIt.registerFactory(() => SettingsRepository(getIt<SharedPreferences>()));
+  getIt.registerFactory(() =>
+      TransactionRepository(getIt<AppDatabase>(), getIt<AssetRepository>()));
 }
 
 void setupServices() {
@@ -45,6 +49,9 @@ void setupServices() {
 
   getIt.registerSingleton(BalanceService(
       getIt<BalanceRepository>(), getIt<AssetRepository>(), getIt<AppStore>()));
+
+  getIt.registerFactory(() => TransactionHistoryService(getIt<AppStore>(),
+      getIt<AssetRepository>(), getIt<TransactionRepository>()));
 }
 
 void setupBlocs() {

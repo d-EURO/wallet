@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:deuro_wallet/packages/storage/asset_storage.dart';
 import 'package:deuro_wallet/packages/storage/balance_storage.dart';
+import 'package:deuro_wallet/packages/storage/transaction_storage.dart';
 import 'package:deuro_wallet/packages/storage/wallet_storage.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -16,7 +17,8 @@ part 'database.g.dart';
 const _encryptionPassword = 'drift.example.unsafe_password';
 const _databaseFileName = 'test.db.enc';
 
-@DriftDatabase(tables: [Assets, Balances, WalletAccountInfos, WalletInfos])
+@DriftDatabase(
+    tables: [Assets, Balances, Transactions, WalletAccountInfos, WalletInfos])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openDatabase());
 

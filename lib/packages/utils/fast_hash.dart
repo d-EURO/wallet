@@ -1,4 +1,4 @@
-/// FNV-1a 64bit Hash-Algorithmus optimiert für Dart-Strings
+/// FNV-1a 64bit Hash-Algorithm
 int fastHash(String string) {
   var hash = 0xcbf29ce484222325;
 

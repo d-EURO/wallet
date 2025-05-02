@@ -26,9 +26,9 @@ class WalletService{
   }
 
   Future<Wallet> getCurrentWallet() async {
-    final id = _settingsRepository.getCurrentWalletId()!;
+    final id = _settingsRepository.currentWalletId!;
     return getWalletById(id);
   }
 
-  bool hasWallet() => _settingsRepository.getCurrentWalletId() != null;
+  bool hasWallet() => _settingsRepository.currentWalletId != null;
 }

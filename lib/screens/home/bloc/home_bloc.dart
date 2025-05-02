@@ -1,5 +1,8 @@
+import 'package:deuro_wallet/di.dart';
+import 'package:deuro_wallet/packages/repository/asset_repository.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/service/balance_service.dart';
+import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
 import 'package:deuro_wallet/packages/service/wallet_service.dart';
 import 'package:deuro_wallet/packages/wallet/wallet.dart';
 import 'package:equatable/equatable.dart';
