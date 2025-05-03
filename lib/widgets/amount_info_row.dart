@@ -26,8 +26,6 @@ class AmountInfoRow extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
-                fontFamily: 'Lato',
-                color: Colors.white,
               ),
             ),
           ),
@@ -35,8 +33,6 @@ class AmountInfoRow extends StatelessWidget {
             amountString,
             style: const TextStyle(
               fontSize: 15,
-              fontFamily: 'Lato',
-              color: Colors.white,
             ),
           ),
           Text(
@@ -44,8 +40,6 @@ class AmountInfoRow extends StatelessWidget {
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              fontFamily: 'Lato',
-              color: Colors.white,
             ),
           ),
         ],

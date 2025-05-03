@@ -31,6 +31,7 @@ class TransactionRepository {
         transaction.type.index,
         transaction.note ?? '',
         transaction.data ?? '',
+        transaction.timestamp,
       );
 
   Future<bool> exitsTransaction(String txId) =>
@@ -80,19 +81,24 @@ class TransactionRepository {
             type: txType,
             note: txData.note,
             data: txData.data,
+            timestamp: txData.timeStamp,
           );
         }).toList());
   }
 
-  Stream<List<Transaction>> watchTransactions() {
-    return _appDatabase
-        .watchTransactions()
-        .transform<List<Transaction>>(_transformer);
-  }
+  Stream<List<Transaction>> watchTransactions() => _appDatabase
+      .watchTransactions()
+      .transform<List<Transaction>>(_transformer);
 
-  Stream<List<Transaction>> watchTransactionsOfAssets(Iterable<Asset> assets) {
+  Stream<List<Transaction>> watchTransactionsOfAssets(Iterable<Asset> assets,
+      [int? limit]) {
+    if (limit != null) {
+      return _appDatabase
+          .watchTransfersOfAssetsLimit(assets.map((e) => e.id), limit)
+          .transform<List<Transaction>>(_transformer);
+    }
     return _appDatabase
-        .watchTransactionsOfAssets(assets.map((e) => e.id))
+        .watchTransfersOfAssets(assets.map((e) => e.id))
         .transform<List<Transaction>>(_transformer);
   }
 
@@ -131,6 +137,7 @@ class TransactionRepository {
             type: txType,
             note: transactionData.note,
             data: transactionData.data,
+            timestamp: transactionData.timeStamp,
           ));
         }
 

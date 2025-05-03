@@ -13,14 +13,13 @@ class ReceivePage extends StatelessWidget {
     final address = getIt<AppStore>().primaryAddress;
 
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
       ),

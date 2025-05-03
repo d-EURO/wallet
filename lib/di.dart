@@ -56,7 +56,11 @@ void setupServices() {
 
 void setupBlocs() {
   getIt.registerSingleton(HomeBloc(
-      getIt<WalletService>(), getIt<BalanceService>(), getIt<AppStore>()));
+    getIt<WalletService>(),
+    getIt<BalanceService>(),
+    getIt<TransactionHistoryService>(),
+    getIt<AppStore>(),
+  ));
 
   getIt.registerFactory(() => RestoreWalletCubit(getIt<WalletService>()));
 }

@@ -1,4 +1,5 @@
 import 'package:deuro_wallet/models/asset.dart';
+import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
 
 enum TransactionTypes { transfer, genericContractCall, tokenTransfer }
 
@@ -13,6 +14,7 @@ class Transaction {
   final TransactionTypes type;
   final String? note;
   final String? data;
+  final DateTime timestamp;
 
   const Transaction({
     required this.height,
@@ -25,5 +27,9 @@ class Transaction {
     required this.type,
     required this.note,
     required this.data,
+    required this.timestamp,
   });
+
+  bool isOutbound(String walletAddress) =>
+      senderAddress.asHexEip55 == walletAddress.asHexEip55;
 }

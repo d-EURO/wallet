@@ -40,7 +40,6 @@ class _StandardSlideButtonState extends State<StandardSlideButton> {
                   child: Text(widget.buttonText,
                       style: TextStyle(
                           fontSize: 16,
-                          fontFamily: 'Lato',
                           fontWeight: FontWeight.w600,
                           color: Colors.white
                       ))),

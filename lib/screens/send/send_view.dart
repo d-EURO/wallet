@@ -1,5 +1,6 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
+import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
 import 'package:deuro_wallet/screens/send/bloc/send_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/widgets/amount_info_row.dart';
@@ -18,14 +19,12 @@ class SendView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           leading: IconButton(
             onPressed: () => context.pop(),
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.white,
             ),
           ),
         ),
@@ -41,7 +40,6 @@ class SendView extends StatelessWidget {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.deny(RegExp(r" ")),
                   ],
-                  style: TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: S.of(context).receiver,
                     border: OutlineInputBorder(
@@ -77,13 +75,12 @@ class SendView extends StatelessWidget {
                   // ),
                 ),
               ),
-              if (state.receiver.isNotEmpty) ...[
+              if (state.receiver.isEthereumAddress) ...[
                 Padding(
                   padding: const EdgeInsets.only(left: 26, right: 26, top: 10),
                   child: Text(
                     "${state.amount.toString()} €",
-                    style: const TextStyle(
-                        fontSize: 60, color: Colors.white, fontFamily: "Lato"),
+                    style: const TextStyle(fontSize: 60),
                     textAlign: TextAlign.center,
                   ),
                 ),

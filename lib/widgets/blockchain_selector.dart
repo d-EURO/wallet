@@ -26,8 +26,6 @@ class BlockchainSelector extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  fontFamily: 'Lato',
-                  color: Colors.white,
                 ),
               ),
             ),
@@ -45,15 +43,12 @@ class BlockchainSelector extends StatelessWidget {
                         radius: 12,
                         backgroundImage:
                             AssetImage(getChainImagePath(blockchain.chainId)),
-                        backgroundColor: Colors.white,
                       ),
                     ),
                     Text(
                       blockchain.name,
                       style: const TextStyle(
                         fontSize: 16,
-                        fontFamily: 'Lato',
-                        color: Colors.white,
                       ),
                     ),
                   ],

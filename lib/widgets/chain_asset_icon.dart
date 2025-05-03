@@ -1,15 +1,11 @@
 import 'package:deuro_wallet/models/asset.dart';
-import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/utils/asset_logo.dart';
 import 'package:flutter/material.dart';
 
 class ChainAssetIcon extends StatelessWidget {
   final Asset asset;
-  late final Blockchain chain;
 
-  ChainAssetIcon({super.key, required this.asset}) {
-    chain = Blockchain.getFromChainId(asset.chainId);
-  }
+  const ChainAssetIcon({super.key, required this.asset});
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -24,7 +20,7 @@ class ChainAssetIcon extends StatelessWidget {
               bottom: 0,
               right: 0,
               width: 13,
-              child: Image.asset(getAssetImagePath(chain.nativeAsset)),
+              child: Image.asset(getChainImagePath(asset.chainId)),
             ),
           ],
         ),

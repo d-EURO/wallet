@@ -1,5 +1,5 @@
 import 'package:deuro_wallet/di.dart';
-import 'package:deuro_wallet/models/blockchain.dart';
+import 'package:deuro_wallet/models/balance.dart';
 import 'package:deuro_wallet/models/transaction.dart';
 import 'package:deuro_wallet/packages/repository/balance_repository.dart';
 import 'package:deuro_wallet/packages/repository/transaction_repository.dart';
@@ -9,6 +9,7 @@ import 'package:deuro_wallet/screens/dashboard/bloc/aggregated_balance_cubit.dar
 import 'package:deuro_wallet/screens/dashboard/bloc/blance_cubit.dart';
 import 'package:deuro_wallet/screens/dashboard/bloc/transaction_history_cubit.dart';
 import 'package:deuro_wallet/screens/dashboard/widgets/balance_section.dart';
+import 'package:deuro_wallet/screens/dashboard/widgets/cash_holding_box.dart';
 import 'package:deuro_wallet/screens/dashboard/widgets/transaction_history_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,23 +24,16 @@ class DashboardPage extends StatelessWidget {
       dEUROPolygonAsset.getEmptyBalance(walletAddress),
     ]);
 
-    aggregatedDEPS = AggregatedBalanceCubit(getIt<BalanceRepository>(), [
-      nDEPSAsset.getEmptyBalance(walletAddress),
-      depsAsset.getEmptyBalance(walletAddress),
-    ]);
-
-    aggregatedEth = AggregatedBalanceCubit(getIt<BalanceRepository>(), [
-      Blockchain.ethereum.nativeAsset.getEmptyBalance(walletAddress),
-      Blockchain.base.nativeAsset.getEmptyBalance(walletAddress),
-      Blockchain.optimism.nativeAsset.getEmptyBalance(walletAddress),
-      Blockchain.arbitrum.nativeAsset.getEmptyBalance(walletAddress),
-    ]);
-
-    polBalanceCubit = BalanceCubit(
-      getIt<BalanceRepository>(),
-      asset: Blockchain.polygon.nativeAsset,
-      walletAddress: walletAddress,
-    );
+    for (final asset in [
+      dEUROAsset,
+      dEUROBaseAsset,
+      dEUROOptimismAsset,
+      dEUROArbitrumAsset,
+      dEUROPolygonAsset,
+    ]) {
+      singleCashHoldings.add(BalanceCubit(getIt<BalanceRepository>(),
+          asset: asset, walletAddress: walletAddress));
+    }
 
     transactionHistoryCubit =
         TransactionHistoryCubit(getIt<TransactionRepository>());
@@ -50,9 +44,7 @@ class DashboardPage extends StatelessWidget {
   String get walletAddress => _appStore.primaryAddress;
 
   late final AggregatedBalanceCubit aggregatedDEuro;
-  late final AggregatedBalanceCubit aggregatedDEPS;
-  late final AggregatedBalanceCubit aggregatedEth;
-  late final BalanceCubit polBalanceCubit;
+  final List<BalanceCubit> singleCashHoldings = [];
   late final TransactionHistoryCubit transactionHistoryCubit;
 
   @override
@@ -60,12 +52,10 @@ class DashboardPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: aggregatedDEuro),
-        BlocProvider.value(value: polBalanceCubit),
-        BlocProvider.value(value: aggregatedEth),
         BlocProvider.value(value: transactionHistoryCubit),
+        ...singleCashHoldings.map((cubit) => BlocProvider.value(value: cubit))
       ],
       child: Scaffold(
-        backgroundColor: Colors.black,
         body: SafeArea(
           top: false,
           child: PopScope(
@@ -93,11 +83,41 @@ class DashboardPage extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.all(20),
                                     child: BlocBuilder<TransactionHistoryCubit,
-                                            List<Transaction>>(
-                                        bloc: transactionHistoryCubit,
-                                        builder: (context, state) =>
-                                            TransactionHistoryBox(transactions: state,)),
+                                        List<Transaction>>(
+                                      bloc: transactionHistoryCubit,
+                                      builder: (context, state) =>
+                                          TransactionHistoryBox(
+                                        transactions: state,
+                                        walletAddress: walletAddress,
+                                        hasShowAll: state.length == 5,
+                                      ),
+                                    ),
                                   ),
+                                  Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Cash Holdings",
+                                                style: TextStyle(fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                          ...singleCashHoldings.map(
+                                            (holding) => BlocBuilder<
+                                                BalanceCubit, Balance>(
+                                              bloc: holding,
+                                              builder: (context, state) =>
+                                                  CashHoldingBox(
+                                                asset: holding.asset,
+                                                balance: state.balance,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      )),
                                 ],
                               ),
                             ),

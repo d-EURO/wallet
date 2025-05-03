@@ -15,7 +15,7 @@ class NumberPad extends StatelessWidget {
   static const _buttonStyle = TextStyle(
       fontSize: 25.0,
       fontWeight: FontWeight.w600,
-      color: Colors.white);
+      color: Colors.black);
 
   @override
   Widget build(BuildContext context) => SizedBox(

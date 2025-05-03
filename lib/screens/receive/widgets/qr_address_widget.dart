@@ -15,9 +15,9 @@ class QRAddressWidget extends StatelessWidget {
             data: uri,
             // errorCorrectionLevel: errorCorrectionLevel,
             size: 300,
-            eyeStyle: const QrEyeStyle(color: Colors.white),
+            eyeStyle: const QrEyeStyle(color: Colors.black),
             dataModuleStyle: const QrDataModuleStyle(
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
           Padding(
@@ -54,14 +54,12 @@ class QRAddressWidget extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 18,
                         fontFamily: 'Monospace',
-                        color: Colors.white,
                       ),
                     ),
                     const Padding(
                       padding: EdgeInsets.only(left: 20),
                       child: Icon(
                         Icons.copy,
-                        color: Colors.white,
                         size: 16,
                       ),
                     )

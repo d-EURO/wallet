@@ -82,7 +82,6 @@ class BalanceSection extends StatelessWidget {
                       "€ ${formatFixed(balance, 18, fractionalDigits: 2, trimZeros: false)}",
                       style: const TextStyle(
                         fontSize: 35,
-                        fontFamily: 'Lato',
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
@@ -95,9 +94,9 @@ class BalanceSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   VerticalIconButton(
-                    onPressed: () => context.push("/send"),
-                    icon: const Icon(Icons.arrow_upward, color: Colors.white),
-                    label: S.of(context).send,
+                    onPressed: () => context.push("/receive"),
+                    icon: const Icon(Icons.arrow_downward, color: Colors.white),
+                    label: S.of(context).receive,
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 15, right: 15),
@@ -108,9 +107,9 @@ class BalanceSection extends StatelessWidget {
                     ),
                   ),
                   VerticalIconButton(
-                    onPressed: () => context.push("/receive"),
-                    icon: const Icon(Icons.arrow_downward, color: Colors.white),
-                    label: S.of(context).receive,
+                    onPressed: () => context.push("/send"),
+                    icon: const Icon(Icons.arrow_upward, color: Colors.white),
+                    label: S.of(context).send,
                   ),
                 ],
               ),

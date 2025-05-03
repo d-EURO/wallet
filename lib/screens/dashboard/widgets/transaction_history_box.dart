@@ -1,16 +1,20 @@
-import 'package:deuro_wallet/di.dart';
+import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/models/transaction.dart';
-import 'package:deuro_wallet/packages/repository/asset_repository.dart';
-import 'package:deuro_wallet/packages/repository/transaction_repository.dart';
-import 'package:deuro_wallet/packages/service/app_store.dart';
-import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
 import 'package:deuro_wallet/screens/dashboard/widgets/transaction_row.dart';
+import 'package:deuro_wallet/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class TransactionHistoryBox extends StatelessWidget {
-  const TransactionHistoryBox({super.key, required this.transactions});
+  const TransactionHistoryBox({
+    super.key,
+    required this.transactions,
+    required this.walletAddress,
+    required this.hasShowAll,
+  });
 
   final List<Transaction> transactions;
+  final bool hasShowAll;
+  final String walletAddress;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -25,26 +29,30 @@ class TransactionHistoryBox extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               child: Row(
                 children: [
-                  Text("Transactions"),
+                  Text(
+                    S.of(context).transactions,
+                    style: TextStyle(fontSize: 14),
+                  ),
                 ],
-              ),
-            ),
-            ActionChip(
-              label: Text("Load Txs"),
-              onPressed: () {
-                TransactionHistoryService(
-                        getIt<AppStore>(),
-                        getIt<AssetRepository>(),
-                        getIt<TransactionRepository>())
-                    .explorerAssistedScan();
-              },
-              avatar: CircleAvatar(
-                child: Icon(Icons.refresh),
               ),
             ),
             ...transactions.map((e) => TransactionRow(
                   transaction: e,
-                ))
+                  walletAddress: walletAddress,
+                )),
+            if (hasShowAll) ...[
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  S.of(context).show_all,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontFamily: "Satoshi Bold",
+                    color: DEuroColors.dEuroGold,
+                  ),
+                ),
+              )
+            ]
           ],
         ),
       );
