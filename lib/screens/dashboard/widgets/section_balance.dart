@@ -1,18 +1,23 @@
 import 'package:deuro_wallet/generated/i18n.dart';
-import 'package:deuro_wallet/packages/utils/format_fixed.dart';
+import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/styles/styles.dart';
 import 'package:deuro_wallet/widgets/action_button.dart';
+import 'package:deuro_wallet/widgets/hide_amount_text.dart';
 import 'package:deuro_wallet/widgets/qr_scanner.dart';
 import 'package:deuro_wallet/widgets/vertical_icon_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class BalanceSection extends StatelessWidget {
+class SectionBalance extends StatelessWidget {
   final BigInt balance;
+  final VoidCallback onHideAmountPress;
 
-  const BalanceSection({
+  const SectionBalance({
     super.key,
     required this.balance,
+    required this.onHideAmountPress,
   });
 
   @override
@@ -32,12 +37,14 @@ class BalanceSection extends StatelessWidget {
                         icon: Icons.credit_card,
                         label: S.of(context).deposit,
                         onPressed: () {},
+                        buttonStyle: kBalanceBarActionButtonStyle,
                       ),
                     ),
                     ActionButton(
                       icon: Icons.account_balance,
                       label: S.of(context).withdraw,
                       onPressed: () {},
+                      buttonStyle: kBalanceBarActionButtonStyle,
                     ),
                     Spacer(),
                     CircleAvatar(
@@ -62,29 +69,35 @@ class BalanceSection extends StatelessWidget {
                       children: [
                         Text(
                           S.of(context).balance,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Lato',
-                            color: Colors.white,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withAlpha(153),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Icon(
-                            Icons.remove_red_eye,
-                            size: 16,
-                            color: Colors.white,
+                        InkWell(
+                          onTap: onHideAmountPress,
+                          enableFeedback: false,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 5),
+                            child: BlocBuilder<SettingsBloc, SettingsState>(
+                              builder: (context, state) => Icon(
+                                state.hideAmounts
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                size: 14,
+                                color: Colors.white.withAlpha(153),
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    Text(
-                      "€ ${formatFixed(balance, 18, fractionalDigits: 2, trimZeros: false)}",
+                    HideAmountText(
+                      amount: balance,
                       style: const TextStyle(
-                        fontSize: 35,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
+                          fontSize: 35,
+                          color: Colors.white,
+                          fontFamily: "Satoshi Bold"),
                       textAlign: TextAlign.center,
                     ),
                   ],

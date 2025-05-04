@@ -3,9 +3,10 @@ import 'package:deuro_wallet/models/transaction.dart';
 import 'package:deuro_wallet/screens/dashboard/widgets/transaction_row.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class TransactionHistoryBox extends StatelessWidget {
-  const TransactionHistoryBox({
+class SectionTransactionHistory extends StatelessWidget {
+  const SectionTransactionHistory({
     super.key,
     required this.transactions,
     required this.walletAddress,
@@ -31,7 +32,19 @@ class TransactionHistoryBox extends StatelessWidget {
                 children: [
                   Text(
                     S.of(context).transactions,
-                    style: TextStyle(fontSize: 14),
+                    style:
+                        TextStyle(fontSize: 14, color: DEuroColors.neutralGrey),
+                  ),
+                  Spacer(),
+                  CircleAvatar(
+                    radius: 17,
+                    backgroundColor: Colors.white10.withAlpha(50),
+                    child: IconButton(
+                      onPressed: () {},
+                      iconSize: 18,
+                      color: DEuroColors.neutralGrey,
+                      icon: Icon(Icons.refresh),
+                    ),
                   ),
                 ],
               ),
@@ -42,7 +55,7 @@ class TransactionHistoryBox extends StatelessWidget {
                 )),
             if (hasShowAll) ...[
               TextButton(
-                onPressed: () {},
+                onPressed: () => context.push("/dashboard/transactions"),
                 child: Text(
                   S.of(context).show_all,
                   style: TextStyle(

@@ -1,12 +1,15 @@
 import 'package:deuro_wallet/models/asset.dart';
-import 'package:deuro_wallet/packages/utils/format_fixed.dart';
+import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/widgets/chain_asset_icon.dart';
+import 'package:deuro_wallet/widgets/hide_amount_text.dart';
 import 'package:flutter/material.dart';
 
 class CashHoldingBox extends StatelessWidget {
   final Asset asset;
   final BigInt balance;
   final Color backgroundColor;
+  final Color firstRowTextColor;
+  final Color secondRowTextColor;
   final bool showBlockchainIcon;
   final bool navigateToDetails;
 
@@ -15,9 +18,17 @@ class CashHoldingBox extends StatelessWidget {
     required this.asset,
     required this.balance,
     this.backgroundColor = Colors.white,
+    this.firstRowTextColor = DEuroColors.anthracite,
+    this.secondRowTextColor = DEuroColors.titanGray60,
     this.showBlockchainIcon = false,
     this.navigateToDetails = true,
   });
+
+  TextStyle get _firstRowTextStyle => TextStyle(
+      fontSize: 14, fontWeight: FontWeight.w700, color: firstRowTextColor);
+
+  TextStyle get _secondRowTextStyle =>
+      TextStyle(fontSize: 12, color: secondRowTextColor);
 
   @override
   Widget build(BuildContext context) => InkWell(
@@ -27,7 +38,7 @@ class CashHoldingBox extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             color: backgroundColor,
           ),
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(12),
           child: Column(
             children: [
               Row(
@@ -38,29 +49,22 @@ class CashHoldingBox extends StatelessWidget {
                   ChainAssetIcon(asset: asset),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 16),
+                      padding: const EdgeInsets.only(left: 12),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            asset.symbol,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(asset.name)
+                          Text(asset.symbol, style: _firstRowTextStyle),
+                          Text(asset.name, style: _secondRowTextStyle)
                         ],
                       ),
                     ),
                   ),
-                  Text(
-                    formatFixed(balance, asset.decimals,
-                        fractionalDigits: 4, trimZeros: false),
-                    style: const TextStyle(fontSize: 16),
-                  )
+                  HideAmountText(
+                    amount: balance, decimals: asset.decimals, fractionalDigits: 4, trimZeros: false,
+                    style: _firstRowTextStyle,
+                  ),
                 ],
               ),
             ],

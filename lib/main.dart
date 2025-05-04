@@ -5,6 +5,7 @@ import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/service/balance_service.dart';
 import 'package:deuro_wallet/screens/home/bloc/home_bloc.dart';
+import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/styles/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,7 +73,10 @@ class _DEuroWalletState extends State<DEuroWallet> {
 
   @override
   Widget build(BuildContext context) => MultiBlocProvider(
-        providers: [BlocProvider.value(value: getIt<HomeBloc>())],
+        providers: [
+          BlocProvider.value(value: getIt<HomeBloc>()),
+          BlocProvider.value(value: getIt<SettingsBloc>()),
+        ],
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           theme: darkTheme,
