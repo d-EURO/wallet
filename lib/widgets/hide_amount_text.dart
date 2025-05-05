@@ -30,8 +30,8 @@ class HideAmountText extends StatelessWidget {
       BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) => Text(
           state.hideAmounts
-              ? "$leadingSymbol  ***.**"
-              : "$leadingSymbol ${formatFixed(amount, decimals, fractionalDigits: fractionalDigits, trimZeros: trimZeros)} $trailingSymbol",
+              ? "${leadingSymbol.isNotEmpty ? "$leadingSymbol " : ""}***.**"
+              : "${leadingSymbol.isNotEmpty ? "$leadingSymbol " : ""}${formatFixed(amount, decimals, fractionalDigits: fractionalDigits, trimZeros: trimZeros)} $trailingSymbol",
           style: style,
           textAlign: textAlign,
         ),

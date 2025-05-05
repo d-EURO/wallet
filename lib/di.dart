@@ -12,6 +12,7 @@ import 'package:deuro_wallet/packages/storage/database.dart';
 import 'package:deuro_wallet/router.dart';
 import 'package:deuro_wallet/screens/home/bloc/home_bloc.dart';
 import 'package:deuro_wallet/screens/restore_wallet/bloc/restore_wallet_cubit.dart';
+import 'package:deuro_wallet/screens/savings/bloc/savings_bloc.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/setup.dart';
 import 'package:get_it/get_it.dart';
@@ -69,4 +70,6 @@ void setupBlocs() {
   getIt.registerSingleton(SettingsBloc());
 
   getIt.registerFactory(() => RestoreWalletCubit(getIt<WalletService>()));
+
+  getIt.registerFactory(() => SavingsBloc(getIt<AppStore>()));
 }

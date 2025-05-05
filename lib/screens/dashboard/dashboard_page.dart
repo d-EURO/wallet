@@ -118,7 +118,8 @@ class DashboardPage extends StatelessWidget {
                                                   icon: Icons.currency_exchange,
                                                   label: "Swap",
                                                   onPressed: () => context
-                                                      .push('/swap/deuro'),
+                                                      .push('/savings'),
+                                                      // .push('/swap/deuro'),
                                                   textStyle:
                                                       kActionButtonTextStyle
                                                           .copyWith(

@@ -5,6 +5,7 @@ import 'package:deuro_wallet/screens/dashboard/dashboard_page.dart';
 import 'package:deuro_wallet/screens/home/home.dart';
 import 'package:deuro_wallet/screens/receive/receive_page.dart';
 import 'package:deuro_wallet/screens/restore_wallet/restore_wallet_page.dart';
+import 'package:deuro_wallet/screens/savings/savings_page.dart';
 import 'package:deuro_wallet/screens/send/send_page.dart';
 import 'package:deuro_wallet/screens/welcome/welcome_page.dart';
 import 'package:flutter/widgets.dart';
@@ -35,6 +36,9 @@ void setupRouter() {
       GoRoute(
           path: "/send",
           builder: (context, state) => SendPage()),
+      GoRoute(
+          path: "/savings",
+          builder: (context, state) => SavingsPage()),
     ],
   ));
 }
