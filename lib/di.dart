@@ -1,5 +1,6 @@
 import 'package:deuro_wallet/packages/repository/asset_repository.dart';
 import 'package:deuro_wallet/packages/repository/balance_repository.dart';
+import 'package:deuro_wallet/packages/repository/node_repository.dart';
 import 'package:deuro_wallet/packages/repository/settings_repository.dart';
 import 'package:deuro_wallet/packages/repository/transaction_repository.dart';
 import 'package:deuro_wallet/packages/repository/wallet_repository.dart';
@@ -26,6 +27,8 @@ Future<void> setup() async {
   setupBlocs();
 
   await setupDefaultAssets();
+  await setupDefaultNodes();
+  await getIt<AppStore>().refreshNodes(getIt<NodeRepository>());
 }
 
 Future<void> setupStorage() async {
@@ -39,6 +42,7 @@ void setupRepositories() {
   getIt.registerFactory(() => WalletRepository(getIt<AppDatabase>()));
   getIt.registerFactory(() => BalanceRepository(getIt<AppDatabase>()));
   getIt.registerFactory(() => AssetRepository(getIt<AppDatabase>()));
+  getIt.registerFactory(() => NodeRepository(getIt<AppDatabase>()));
   getIt.registerFactory(() => SettingsRepository(getIt<SharedPreferences>()));
   getIt.registerFactory(() =>
       TransactionRepository(getIt<AppDatabase>(), getIt<AssetRepository>()));
@@ -62,7 +66,7 @@ void setupBlocs() {
     getIt<TransactionHistoryService>(),
     getIt<AppStore>(),
   ));
-
   getIt.registerSingleton(SettingsBloc());
+
   getIt.registerFactory(() => RestoreWalletCubit(getIt<WalletService>()));
 }
