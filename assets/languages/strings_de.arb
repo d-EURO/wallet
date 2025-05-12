@@ -14,6 +14,10 @@
     "restore_wallet": "Wallet wiederherstellen",
     "restore_wallet_from_seed": "Wallet mit Seed wiederherstellen",
     "restore_wallet_from_seed_qr": "Mit SeedQR wiederherstellen",
+    "savings_balance": "Guthaben",
+    "savings_enable": "Sparen aktivieren",
+    "savings_add": "Einzahlen",
+    "savings_remove": "Auszahlen",
     "scan": "Scan",
     "scan_qr_code": "QR scannen",
     "seed": "Seed",
@@ -22,9 +26,9 @@
     "terms_and_conditions": "Nutzungsbedinungen",
     "to": "an",
     "transactions": "Transaktionen",
+    "your_deuro_cash_and_savings_wallet": "Dein dEURO Cash\n& Spar Wallet",
     "your_seed": "Dein dEURO-Seed",
     "your_seed_disclaimer": "Dies ist Ihr einzigartiger und privater Seed und der einzige Weg, um Ihre Wallet im Falle eines Verlusts oder einer Fehlfunktion wiederherzustellen.",
-    "welcome_deuro_wallet": "Willkommen im \ndEURO Wallet",
     "welcome_disclaimer": "Durch das Erstellen oder Importieren einer dEuro Wallet akzeptieren Sie unsere",
     "withdraw": "Auszahlen"
 }

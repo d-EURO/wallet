@@ -15,6 +15,10 @@
     "restore_wallet_from_seed": "Restore wallet with seed",
     "restore_wallet_from_seed_description": "The Seed is a 12-world-phrase, which you got during the creation of your wallet.",
     "restore_wallet_from_seed_qr": "Restore with SeedQR",
+    "savings_balance": "Savings Balance",
+    "savings_enable": "Enable Savings",
+    "savings_add": "Add",
+    "savings_remove": "Remove",
     "scan": "Scan",
     "scan_qr_code": "Scan QR",
     "seed": "Seed",
@@ -23,9 +27,9 @@
     "terms_and_conditions": "terms and conditions",
     "to": "to",
     "transactions": "Transactions",
+    "your_deuro_cash_and_savings_wallet": "Your dEURO Cash\n& Savings Wallet",
     "your_seed": "Your dEURO-seed",
     "your_seed_disclaimer": "This is your unique and private seed and it is the only way to recover your wallet in case of loss or malfunction.",
-    "welcome_deuro_wallet": "Welcome in the\ndEURO Wallet",
     "welcome_disclaimer": "By creating of restoring a dEuro Wallet you agree to our",
     "withdraw": "Withdraw"
 }

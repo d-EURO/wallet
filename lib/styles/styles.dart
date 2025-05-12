@@ -6,7 +6,7 @@ const kPrimaryButtonTextStyle = TextStyle(fontSize: 16, color: Colors.white);
 const kActionButtonTextStyle = TextStyle(fontSize: 12, color: Colors.white);
 
 final kFullwidthPrimaryButtonStyle = ElevatedButton.styleFrom(
-  backgroundColor: DEuroColors.dEuroBlue,
+  backgroundColor: Colors.white.withAlpha(50),
   fixedSize: Size(double.infinity, 55),
   elevation: 0.0,
 );
