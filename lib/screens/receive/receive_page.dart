@@ -2,6 +2,7 @@ import 'package:deuro_wallet/di.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/wallet/payment_uri.dart';
 import 'package:deuro_wallet/screens/receive/widgets/qr_address_widget.dart';
+import 'package:deuro_wallet/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,7 +20,7 @@ class ReceivePage extends StatelessWidget {
           onPressed: () => context.pop(),
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.black,
+            color: DEuroColors.anthracite,
           ),
         ),
       ),

@@ -77,25 +77,28 @@ class _DEuroWalletState extends State<DEuroWallet> {
           BlocProvider.value(value: getIt<HomeBloc>()),
           BlocProvider.value(value: getIt<SettingsBloc>()),
         ],
-        child: MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          theme: darkTheme,
-          supportedLocales: S.delegate.supportedLocales,
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          routerConfig: getIt<GoRouter>(),
-          builder: (context, child) => BlocListener<HomeBloc, HomeState>(
-            listener: (context, state) {
-              if (!state.isLoadingWallet) {
-                getIt<GoRouter>()
-                    .go(state.openWallet != null ? '/dashboard' : '/welcome');
-              }
-            },
-            child: child,
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+          builder: (context, state) => MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            theme: darkTheme,
+            supportedLocales: S.delegate.supportedLocales,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            locale: Locale(state.language.code),
+            routerConfig: getIt<GoRouter>(),
+            builder: (context, child) => BlocListener<HomeBloc, HomeState>(
+              listener: (context, state) {
+                if (!state.isLoadingWallet) {
+                  getIt<GoRouter>()
+                      .go(state.openWallet != null ? '/dashboard' : '/welcome');
+                }
+              },
+              child: child,
+            ),
           ),
         ),
       );

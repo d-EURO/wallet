@@ -11,6 +11,12 @@ final kFullwidthPrimaryButtonStyle = ElevatedButton.styleFrom(
   elevation: 0.0,
 );
 
+final kFullwidthSecondaryButtonStyle = ElevatedButton.styleFrom(
+  backgroundColor: Colors.black.withAlpha(50),
+  fixedSize: Size(double.infinity, 55),
+  elevation: 0.0,
+);
+
 final kBalanceBarActionButtonStyle = FilledButton.styleFrom(
   backgroundColor: Colors.white.withAlpha(50),
   textStyle: kPrimaryButtonTextStyle,

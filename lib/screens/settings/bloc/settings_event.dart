@@ -10,3 +10,12 @@ sealed class SettingsEvent extends Equatable {
 final class ToggleHideAmountEvent extends SettingsEvent {
   const ToggleHideAmountEvent();
 }
+
+final class SetLanguageEvent extends SettingsEvent {
+  final Language language;
+
+  const SetLanguageEvent(this.language);
+
+  @override
+  List<Object> get props => [language];
+}

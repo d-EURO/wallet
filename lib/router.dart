@@ -23,12 +23,12 @@ void setupRouter() {
     routes: <RouteBase>[
       GoRoute(path: "/", builder: (context, state) => HomePage()),
       GoRoute(path: "/welcome", builder: (context, state) => WelcomePage()),
-      GoRoute(path: "/wallet", builder: (context, state) => HomePage(), routes: [
-        GoRoute(
-            path: "/create", builder: (context, state) => CreateWalletPage()),
-        GoRoute(
-            path: "/restore", builder: (context, state) => RestoreWalletPage()),
-      ]),
+      GoRoute(
+          path: "/wallet/create",
+          builder: (context, state) => CreateWalletPage()),
+      GoRoute(
+          path: "/wallet/restore",
+          builder: (context, state) => RestoreWalletPage()),
       GoRoute(
           path: "/dashboard",
           builder: (context, state) => DashboardPage(getIt<AppStore>())),

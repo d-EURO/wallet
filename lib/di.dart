@@ -15,6 +15,7 @@ import 'package:deuro_wallet/screens/restore_wallet/bloc/restore_wallet_cubit.da
 import 'package:deuro_wallet/screens/savings/bloc/savings_bloc.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/setup.dart';
+import 'package:deuro_wallet/styles/language.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,7 +68,9 @@ void setupBlocs() {
     getIt<TransactionHistoryService>(),
     getIt<AppStore>(),
   ));
-  getIt.registerSingleton(SettingsBloc());
+
+  getIt.registerSingleton(
+      SettingsBloc(getIt<SettingsRepository>()));
 
   getIt.registerFactory(() => RestoreWalletCubit(getIt<WalletService>()));
 
