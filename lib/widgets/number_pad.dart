@@ -48,7 +48,7 @@ class NumberPad extends StatelessWidget {
                   button: true,
                   child: Icon(
                     Icons.arrow_back_ios,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               );

@@ -7,13 +7,12 @@ sealed class SavingsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class FeeChanged extends SavingsEvent {
-  const FeeChanged(this.fee);
+class EnableSavings extends SavingsEvent {
+  const EnableSavings();
+}
 
-  final String fee;
-
-  @override
-  List<Object> get props => [fee];
+class LoadIsEnabled extends SavingsEvent {
+  const LoadIsEnabled();
 }
 
 final class LoadSavingsBalance extends SavingsEvent {

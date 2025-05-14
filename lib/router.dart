@@ -6,7 +6,9 @@ import 'package:deuro_wallet/screens/home/home.dart';
 import 'package:deuro_wallet/screens/receive/receive_page.dart';
 import 'package:deuro_wallet/screens/restore_wallet/restore_wallet_page.dart';
 import 'package:deuro_wallet/screens/savings/savings_page.dart';
+import 'package:deuro_wallet/screens/savings_edit/savings_edit_page.dart';
 import 'package:deuro_wallet/screens/send/send_page.dart';
+import 'package:deuro_wallet/screens/settings/settings_page.dart';
 import 'package:deuro_wallet/screens/welcome/welcome_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -21,24 +23,30 @@ void setupRouter() {
     routes: <RouteBase>[
       GoRoute(path: "/", builder: (context, state) => HomePage()),
       GoRoute(path: "/welcome", builder: (context, state) => WelcomePage()),
-      GoRoute(
-          path: "/wallet/create",
-          builder: (context, state) => CreateWalletPage()),
-      GoRoute(
-          path: "/wallet/restore",
-          builder: (context, state) => RestoreWalletPage()),
+      GoRoute(path: "/wallet", builder: (context, state) => HomePage(), routes: [
+        GoRoute(
+            path: "/create", builder: (context, state) => CreateWalletPage()),
+        GoRoute(
+            path: "/restore", builder: (context, state) => RestoreWalletPage()),
+      ]),
       GoRoute(
           path: "/dashboard",
           builder: (context, state) => DashboardPage(getIt<AppStore>())),
+      GoRoute(path: "/receive", builder: (context, state) => ReceivePage()),
+      GoRoute(path: "/send", builder: (context, state) => SendPage()),
+      GoRoute(path: "/settings", builder: (context, state) => SettingsPage()),
       GoRoute(
-          path: "/receive",
-          builder: (context, state) => ReceivePage()),
-      GoRoute(
-          path: "/send",
-          builder: (context, state) => SendPage()),
-      GoRoute(
-          path: "/savings",
-          builder: (context, state) => SavingsPage()),
+        path: "/savings",
+        routes: [
+          GoRoute(
+              path: '/add',
+              builder: (context, state) => SavingsEditPage(isAdding: true)),
+          GoRoute(
+              path: '/remove',
+              builder: (context, state) => SavingsEditPage(isAdding: false)),
+        ],
+        builder: (context, state) => SavingsPage(),
+      ),
     ],
   ));
 }

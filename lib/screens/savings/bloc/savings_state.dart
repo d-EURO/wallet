@@ -4,25 +4,25 @@ class SavingsState extends Equatable {
   const SavingsState({
     this.amount = "0",
     this.interest = "0",
-    this.fee = "0.0"
+    this.isEnabled = false,
   });
 
   final String amount;
   final String interest;
-  final String fee;
+  final bool isEnabled;
 
   SavingsState copyWith({
     String? amount,
     String? interest,
-    String? fee,
+    bool? isEnabled,
   }) {
     return SavingsState(
       amount: amount ?? this.amount,
       interest: interest ?? this.interest,
-      fee: fee ?? this.fee,
+      isEnabled: isEnabled ?? this.isEnabled,
     );
   }
 
   @override
-  List<Object> get props => [amount, fee];
+  List<Object> get props => [amount, interest, isEnabled];
 }

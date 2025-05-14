@@ -15,6 +15,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       : super(HomeState()) {
     on<LoadCurrentWalletEvent>(_onLoadCurrentWallet);
     on<LoadWalletEvent>(_onLoadWallet);
+    on<DeleteCurrentWalletEvent>(_onDeleteCurrentWallet);
   }
 
   final WalletService _walletService;
@@ -37,6 +38,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     _transactionHistoryService.explorerAssistedScan();
 
     emit(state.copyWith(openWallet: wallet, isLoadingWallet: false));
+  }
+  Future<void> _onDeleteCurrentWallet(
+      DeleteCurrentWalletEvent event, Emitter<HomeState> emit) async {
+    emit(state.copyWith(isLoadingWallet: true));
+
+    emit(HomeState(openWallet: null, isLoadingWallet: false));
   }
 
   Future<void> _onLoadWallet(

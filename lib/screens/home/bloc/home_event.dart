@@ -11,6 +11,10 @@ final class LoadCurrentWalletEvent extends HomeEvent {
   const LoadCurrentWalletEvent();
 }
 
+final class DeleteCurrentWalletEvent extends HomeEvent {
+  const DeleteCurrentWalletEvent();
+}
+
 final class LoadWalletEvent extends HomeEvent {
   const LoadWalletEvent(this.wallet);
 

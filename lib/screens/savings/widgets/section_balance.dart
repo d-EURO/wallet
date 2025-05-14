@@ -11,11 +11,13 @@ import 'package:go_router/go_router.dart';
 class SectionBalance extends StatelessWidget {
   final BigInt balance;
   final BigInt collectedInterest;
+  final bool isEnabled;
 
   const SectionBalance({
     super.key,
     required this.balance,
     required this.collectedInterest,
+    required this.isEnabled,
   });
 
   @override
@@ -58,7 +60,7 @@ class SectionBalance extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      "Savings ${S.of(context).balance}",
+                      S.of(context).savings_balance,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.white.withAlpha(153),
@@ -78,23 +80,32 @@ class SectionBalance extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ActionButton(
-                    icon: Icons.add,
-                    label: "Add",
-                    onPressed: () {},
-                    buttonStyle: kBalanceBarActionButtonStyle,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 15),
-                    child: ActionButton(
-                      icon: Icons.remove,
-                      label: "Remove",
-                      onPressed: () {},
-                      buttonStyle: kBalanceBarActionButtonStyle,
-                    ),
-                  ),
-                ],
+                children: isEnabled
+                    ? [
+                        ActionButton(
+                          icon: Icons.add,
+                          label: S.of(context).savings_add,
+                          onPressed: () => context.push('/savings/add'),
+                          buttonStyle: kBalanceBarActionButtonStyle,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 15),
+                          child: ActionButton(
+                            icon: Icons.remove,
+                            label: S.of(context).savings_remove,
+                            onPressed: () => context.push('/savings/remove'),
+                            buttonStyle: kBalanceBarActionButtonStyle,
+                          ),
+                        ),
+                      ]
+                    : [
+                        ActionButton(
+                          icon: Icons.savings,
+                          label: S.of(context).savings_enable,
+                          onPressed: () {},
+                          buttonStyle: kBalanceBarActionButtonStyle,
+                        ),
+                      ],
               ),
               Container(
                 margin: const EdgeInsets.only(
