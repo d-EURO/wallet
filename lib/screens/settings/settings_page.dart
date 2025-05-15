@@ -46,13 +46,15 @@ class SettingsPage extends StatelessWidget {
                     title: S.of(context).settings_general,
                     settings: [
                       SettingOption(
-                          title: S.of(context).settings_nodes,
-                          leading: NodesIcon(size: 24),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20,
-                            color: DEuroColors.anthracite,
-                          )),
+                        title: S.of(context).settings_nodes,
+                        leading: NodesIcon(size: 24),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 20,
+                          color: DEuroColors.anthracite,
+                        ),
+                        onTap: () => context.push('/settings/nodes'),
+                      ),
                       SettingOption(
                         title: S.of(context).settings_languages,
                         leading: LanguagesIcon(

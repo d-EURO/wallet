@@ -21,6 +21,7 @@
     "restore_wallet": "Wallet wiederherstellen",
     "restore_wallet_from_seed": "Wallet mit Seed wiederherstellen",
     "restore_wallet_from_seed_qr": "Mit SeedQR wiederherstellen",
+    "save": "Speichern",
     "savings_balance": "Guthaben",
     "savings_enable": "Sparen aktivieren",
     "savings_add": "Einzahlen",

@@ -22,6 +22,7 @@
     "restore_wallet_from_seed": "Restore wallet with seed",
     "restore_wallet_from_seed_description": "The Seed is a 12-world-phrase, which you got during the creation of your wallet.",
     "restore_wallet_from_seed_qr": "Restore with SeedQR",
+    "save": "Save",
     "savings_balance": "Savings Balance",
     "savings_enable": "Enable Savings",
     "savings_add": "Add",
