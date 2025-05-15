@@ -11,6 +11,15 @@ final kFullwidthPrimaryButtonStyle = ElevatedButton.styleFrom(
   elevation: 0.0,
 );
 
+final kFullwidthBlueButtonStyle = FilledButton.styleFrom(
+  backgroundColor: DEuroColors.dEuroBlue,
+  fixedSize: const Size(double.infinity, 50),
+  padding: const EdgeInsets.only(left: 24, right: 24),
+);
+
+const kFullwidthBlueButtonTextStyle =
+    TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500);
+
 final kFullwidthSecondaryButtonStyle = ElevatedButton.styleFrom(
   backgroundColor: Colors.black.withAlpha(50),
   fixedSize: Size(double.infinity, 55),
@@ -20,11 +29,10 @@ final kFullwidthSecondaryButtonStyle = ElevatedButton.styleFrom(
 final kBalanceBarActionButtonStyle = FilledButton.styleFrom(
   backgroundColor: Colors.white.withAlpha(50),
   textStyle: kPrimaryButtonTextStyle,
-  padding: EdgeInsets.only(top:5, bottom: 5, left: 10, right: 10),
+  padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
 );
 
 final kFullwidthActionButtonStyle = FilledButton.styleFrom(
-  backgroundColor: DEuroColors.neutralGrey.withAlpha(50),
-  padding: EdgeInsets.only(top:5, bottom: 5, left: 10, right: 10),
-  iconColor: DEuroColors.neutralGrey
-);
+    backgroundColor: DEuroColors.neutralGrey.withAlpha(50),
+    padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+    iconColor: DEuroColors.neutralGrey);

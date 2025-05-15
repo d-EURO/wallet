@@ -1,61 +1,107 @@
 import 'package:deuro_wallet/generated/i18n.dart';
-import 'package:deuro_wallet/packages/wallet/wallet.dart';
 import 'package:deuro_wallet/screens/create_wallet/bloc/create_wallet_cubit.dart';
 import 'package:deuro_wallet/screens/home/bloc/home_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/styles/styles.dart';
+import 'package:deuro_wallet/widgets/icons.dart';
+import 'package:deuro_wallet/widgets/seed_blur_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 class CreateWalletView extends StatelessWidget {
   const CreateWalletView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.black,
         body: SafeArea(
           child: SizedBox(
             width: double.infinity,
             child: Padding(
               padding: const EdgeInsets.only(left: 10, right: 10),
-              child: BlocBuilder<CreateWalletCubit, Wallet?>(
+              child: BlocBuilder<CreateWalletCubit, CreateWalletState>(
                 builder: (context, state) {
-                  if (state != null) {
+                  if (state.wallet != null) {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 20, bottom: 20),
-                          child: Image.asset(
-                            "assets/images/Flag_of_Europe.png",
+                          child: SvgPicture.asset(
+                            "assets/images/backup_seed.svg",
                             width: 155,
                           ),
                         ),
                         Text(
-                          S.of(context).your_seed,
+                          S.of(context).create_wallet_title,
                           style: const TextStyle(
-                              fontSize: 20, color: Colors.white),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 30),
-                          child: Text(
-                            S.of(context).your_seed_disclaimer,
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.grey),
+                            fontSize: 26,
+                            fontWeight: FontWeight.w700,
+                            color: DEuroColors.anthracite,
                           ),
                         ),
-                        Text(
-                          state.seed,
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.white),
-                          textAlign: TextAlign.center,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 3, bottom: 20),
+                          child: Text(
+                            S.of(context).create_wallet_subtitle,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontSize: 14, color: DEuroColors.neutralGrey),
+                          ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.all(20),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(right: 10, top: 5),
+                                child: RecoveryKeyIcon(size: 20),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 3),
+                                      child: Text(
+                                        S
+                                            .of(context)
+                                            .create_wallet_recovery_key_title,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: DEuroColors.anthracite,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      S
+                                          .of(context)
+                                          .create_wallet_recovery_key_subtitle,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: DEuroColors.neutralGrey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SeedBlurCard(
+                          text: state.wallet!.seed,
+                          onTap:
+                              context.read<CreateWalletCubit>().toggleShowSeed,
+                          blur: state.hideSeed,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
                           child: CupertinoButton(
-                            onPressed: () => _copySeed(state.seed),
+                            onPressed: () => _copySeed(state.wallet!.seed),
                             child: Text(
                               S.of(context).copy_seed,
                               style: const TextStyle(
@@ -68,13 +114,15 @@ class CreateWalletView extends StatelessWidget {
                         const Spacer(),
                         Padding(
                           padding: const EdgeInsets.only(top: 20, bottom: 20),
-                          child: ElevatedButton(
-                            onPressed: () => context.read<HomeBloc>().add(LoadWalletEvent(state)),
-                            style: kFullwidthPrimaryButtonStyle,
+                          child: TextButton(
+                            onPressed: () => context
+                                .read<HomeBloc>()
+                                .add(LoadWalletEvent(state.wallet!)),
+                            style: kFullwidthBlueButtonStyle,
                             child: Text(
-                              S.of(context).create_wallet,
+                              S.of(context).create_wallet_confirm,
                               textAlign: TextAlign.center,
-                              style: kPrimaryButtonTextStyle,
+                              style: kFullwidthBlueButtonTextStyle,
                             ),
                           ),
                         ),
