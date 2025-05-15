@@ -72,7 +72,9 @@ class DashboardPage extends StatelessWidget {
                       bloc: aggregatedDEuro,
                       builder: (context, state) => SectionBalance(
                         balance: state.balance,
-                        onHideAmountPress: () => context.read<SettingsBloc>().add(ToggleHideAmountEvent()),
+                        onHideAmountPress: () => context
+                            .read<SettingsBloc>()
+                            .add(ToggleHideAmountEvent()),
                       ),
                     ),
                     Expanded(
@@ -100,59 +102,60 @@ class DashboardPage extends StatelessWidget {
                                       ),
                                     ),
                                     Padding(
-                                        padding: EdgeInsets.all(20),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "Cash Holdings",
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color:
-                                                        DEuroColors.neutralGrey,
-                                                  ),
-                                                ),
-                                                Spacer(),
-                                                // ActionButton(
-                                                //   icon: Icons.currency_exchange,
-                                                //   label: "Swap",
-                                                //   onPressed: () => context
-                                                //       .push('/swap/deuro'),
-                                                //   textStyle:
-                                                //       kActionButtonTextStyle
-                                                //           .copyWith(
-                                                //     color:
-                                                //         DEuroColors.neutralGrey,
-                                                //   ),
-                                                // ),
-                                                ActionButton(
-                                                  icon: Icons.savings,
-                                                  label: "Savings",
-                                                  onPressed: () =>
-                                                      context.push('/savings'),
-                                                  textStyle:
-                                                      kActionButtonTextStyle
-                                                          .copyWith(
-                                                    color:
-                                                        DEuroColors.neutralGrey,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            ...singleCashHoldings.map(
-                                              (holding) => BlocBuilder<
-                                                  BalanceCubit, Balance>(
-                                                bloc: holding,
-                                                builder: (context, state) =>
-                                                    CashHoldingBox(
-                                                  asset: holding.asset,
-                                                  balance: state.balance,
+                                      padding: EdgeInsets.all(20),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Cash Holdings",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color:
+                                                      DEuroColors.neutralGrey,
                                                 ),
                                               ),
-                                            )
-                                          ],
-                                        )),
+                                              Spacer(),
+                                              // ActionButton(
+                                              //   icon: Icons.currency_exchange,
+                                              //   label: "Swap",
+                                              //   onPressed: () => context
+                                              //       .push('/swap/deuro'),
+                                              //   textStyle:
+                                              //       kActionButtonTextStyle
+                                              //           .copyWith(
+                                              //     color:
+                                              //         DEuroColors.neutralGrey,
+                                              //   ),
+                                              // ),
+                                              ActionButton(
+                                                icon: Icons.savings,
+                                                label: "Savings",
+                                                onPressed: () =>
+                                                    context.push('/savings'),
+                                                textStyle:
+                                                    kActionButtonTextStyle
+                                                        .copyWith(
+                                                  color:
+                                                      DEuroColors.neutralGrey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          ...singleCashHoldings.map(
+                                            (holding) => BlocBuilder<
+                                                BalanceCubit, Balance>(
+                                              bloc: holding,
+                                              builder: (context, state) =>
+                                                  CashHoldingBox(
+                                                asset: holding.asset,
+                                                balance: state.balance,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
