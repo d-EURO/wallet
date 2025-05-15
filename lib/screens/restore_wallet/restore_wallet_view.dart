@@ -23,7 +23,6 @@ class RestoreWalletView extends StatelessWidget {
           }
         },
         child: Scaffold(
-          backgroundColor: Colors.black,
           body: SafeArea(
             child: SizedBox(
               width: double.infinity,
@@ -34,32 +33,35 @@ class RestoreWalletView extends StatelessWidget {
                   children: [
                     Text(
                       S.of(context).restore_wallet,
-                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                      style: const TextStyle(
+                          fontSize: 20, color: DEuroColors.anthracite),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Text(
                         S.of(context).restore_wallet_from_seed_description,
-                        style:
-                            const TextStyle(fontSize: 15, color: Colors.grey),
+                        style: const TextStyle(
+                            fontSize: 15, color: DEuroColors.neutralGrey),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: TextField(
                         controller: _controller,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: DEuroColors.anthracite),
                         decoration: InputDecoration(
                           hintText: "Seed",
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: DEuroColors.dEuroBlue),
+                            borderSide:
+                                BorderSide(color: DEuroColors.dEuroBlue),
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: DEuroColors.dEuroBlue),
+                            borderSide:
+                                BorderSide(color: DEuroColors.dEuroBlue),
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
                         ),
@@ -78,7 +80,7 @@ class RestoreWalletView extends StatelessWidget {
                           onPressed: () => context
                               .read<RestoreWalletCubit>()
                               .restoreWalletFromSeedQR(context),
-                          style: kFullwidthPrimaryButtonStyle,
+                          style: kFullwidthBlueButtonStyle,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -92,7 +94,7 @@ class RestoreWalletView extends StatelessWidget {
                               Text(
                                 S.of(context).restore_wallet_from_seed_qr,
                                 textAlign: TextAlign.center,
-                                style: kPrimaryButtonTextStyle,
+                                style: kFullwidthBlueButtonTextStyle,
                               ),
                             ],
                           ),
