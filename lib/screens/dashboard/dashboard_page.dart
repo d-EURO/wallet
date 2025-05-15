@@ -114,12 +114,23 @@ class DashboardPage extends StatelessWidget {
                                                   ),
                                                 ),
                                                 Spacer(),
+                                                // ActionButton(
+                                                //   icon: Icons.currency_exchange,
+                                                //   label: "Swap",
+                                                //   onPressed: () => context
+                                                //       .push('/swap/deuro'),
+                                                //   textStyle:
+                                                //       kActionButtonTextStyle
+                                                //           .copyWith(
+                                                //     color:
+                                                //         DEuroColors.neutralGrey,
+                                                //   ),
+                                                // ),
                                                 ActionButton(
-                                                  icon: Icons.currency_exchange,
-                                                  label: "Swap",
-                                                  onPressed: () => context
-                                                      .push('/savings'),
-                                                      // .push('/swap/deuro'),
+                                                  icon: Icons.savings,
+                                                  label: "Savings",
+                                                  onPressed: () =>
+                                                      context.push('/savings'),
                                                   textStyle:
                                                       kActionButtonTextStyle
                                                           .copyWith(
