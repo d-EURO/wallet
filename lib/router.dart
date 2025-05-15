@@ -9,6 +9,7 @@ import 'package:deuro_wallet/screens/savings/savings_page.dart';
 import 'package:deuro_wallet/screens/savings_edit/savings_edit_page.dart';
 import 'package:deuro_wallet/screens/send/send_page.dart';
 import 'package:deuro_wallet/screens/settings/settings_page.dart';
+import 'package:deuro_wallet/screens/settings_languages/settings_languages_page.dart';
 import 'package:deuro_wallet/screens/welcome/welcome_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +35,15 @@ void setupRouter() {
           builder: (context, state) => DashboardPage(getIt<AppStore>())),
       GoRoute(path: "/receive", builder: (context, state) => ReceivePage()),
       GoRoute(path: "/send", builder: (context, state) => SendPage()),
-      GoRoute(path: "/settings", builder: (context, state) => SettingsPage()),
+      GoRoute(
+        path: "/settings",
+        routes: [
+          GoRoute(
+              path: '/languages',
+              builder: (context, state) => SettingsLanguagePage()),
+        ],
+        builder: (context, state) => SettingsPage(),
+      ),
       GoRoute(
         path: "/savings",
         routes: [

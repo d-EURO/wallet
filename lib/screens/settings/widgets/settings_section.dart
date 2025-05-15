@@ -3,41 +3,42 @@ import 'package:flutter/material.dart';
 
 class SettingOption {
   final String title;
-  final Widget leading;
+  final Widget? leading;
   final Widget? trailing;
   final String? selectedOption;
   final GestureTapCallback? onTap;
 
   SettingOption({
     required this.title,
-    required this.leading,
+    this.leading,
     this.trailing,
     this.selectedOption,
-    this.onTap
+    this.onTap,
   });
 }
 
 class SettingsSections extends StatelessWidget {
-  final String title;
+  final String? title;
   final List<SettingOption> settings;
 
   const SettingsSections(
-      {super.key, required this.title, required this.settings});
+      {super.key, this.title, required this.settings});
 
   @override
   Widget build(BuildContext context) => Padding(
         padding: EdgeInsets.all(20),
         child: Column(
           children: [
-            Row(children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: DEuroColors.neutralGrey,
-                ),
-              )
-            ]),
+            if (title != null)
+              Row(children: [
+                Text(
+                  title!,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: DEuroColors.neutralGrey,
+                  ),
+                )
+              ]),
             Container(
               margin: const EdgeInsets.only(top: 8),
               decoration: BoxDecoration(
@@ -55,7 +56,7 @@ class SettingsSections extends StatelessWidget {
                       enableFeedback: false,
                       onTap: setting.onTap,
                       child: Row(children: [
-                        setting.leading,
+                        if (setting.leading != null) setting.leading!,
                         Padding(
                           padding: const EdgeInsets.only(left: 12),
                           child: Text(

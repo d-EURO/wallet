@@ -65,9 +65,7 @@ class SettingsPage extends StatelessWidget {
                           color: DEuroColors.anthracite,
                         ),
                         selectedOption: state.language.name,
-                        onTap: () => context
-                            .read<SettingsBloc>()
-                            .add(SetLanguageEvent(Language.de)),
+                        onTap: () => context.push('/settings/languages'),
                       ),
                     ],
                   ),
