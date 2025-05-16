@@ -13,6 +13,7 @@ import 'package:deuro_wallet/screens/settings/settings_page.dart';
 import 'package:deuro_wallet/screens/settings_edit_node/settings_edit_node_page.dart';
 import 'package:deuro_wallet/screens/settings_languages/settings_languages_page.dart';
 import 'package:deuro_wallet/screens/settings_nodes/settings_nodes_page.dart';
+import 'package:deuro_wallet/screens/settings_seed/settings_seed_page.dart';
 import 'package:deuro_wallet/screens/welcome/welcome_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -37,7 +38,10 @@ void setupRouter() {
           path: "/dashboard",
           builder: (context, state) => DashboardPage(getIt<AppStore>())),
       GoRoute(path: "/receive", builder: (context, state) => ReceivePage()),
-      GoRoute(path: "/send", builder: (context, state) => SendPage()),
+      GoRoute(
+          path: "/send",
+          builder: (context, state) => SendPage(
+              params: (state.extra as SendRouteParams?) ?? SendRouteParams())),
       GoRoute(
         path: "/settings",
         routes: [
@@ -45,10 +49,10 @@ void setupRouter() {
               path: '/languages',
               builder: (context, state) => SettingsLanguagePage()),
           GoRoute(
+              path: '/seed', builder: (context, state) => SettingsSeedPage()),
+          GoRoute(
             path: '/nodes',
-            builder: (context, state) {
-              print(state.path);
-              return SettingsNodesPage();},
+            builder: (context, state) => SettingsNodesPage(),
             routes: [
               GoRoute(
                 path: "/:chainId",

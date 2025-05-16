@@ -13,6 +13,12 @@ import 'package:go_router/go_router.dart';
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
+  static const _forwardIcon = Icon(
+    Icons.arrow_forward_ios,
+    size: 20,
+    color: DEuroColors.anthracite,
+  );
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: CupertinoNavigationBar(
@@ -48,11 +54,7 @@ class SettingsPage extends StatelessWidget {
                       SettingOption(
                         title: S.of(context).settings_nodes,
                         leading: NodesIcon(size: 24),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 20,
-                          color: DEuroColors.anthracite,
-                        ),
+                        trailing: _forwardIcon,
                         onTap: () => context.push('/settings/nodes'),
                       ),
                       SettingOption(
@@ -60,16 +62,23 @@ class SettingsPage extends StatelessWidget {
                         leading: LanguagesIcon(
                           size: 24,
                         ),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 20,
-                          color: DEuroColors.anthracite,
-                        ),
+                        trailing: _forwardIcon,
                         selectedOption: state.language.name,
                         onTap: () => context.push('/settings/languages'),
                       ),
                     ],
                   ),
+                ),
+                SettingsSections(
+                  title: S.of(context).settings_dangerzone,
+                  settings: [
+                    SettingOption(
+                      title: S.of(context).show_seed,
+                      leading: RecoveryKeyIcon(size: 24),
+                      trailing: _forwardIcon,
+                      onTap: () => context.push('/settings/seed'),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 36, bottom: 36),

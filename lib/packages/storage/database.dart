@@ -18,8 +18,14 @@ part 'database.g.dart';
 const _encryptionPassword = 'drift.example.unsafe_password';
 const _databaseFileName = 'test.db.enc';
 
-@DriftDatabase(
-    tables: [Assets, Balances, Nodes, Transactions, WalletAccountInfos, WalletInfos])
+@DriftDatabase(tables: [
+  Assets,
+  Balances,
+  Nodes,
+  Transactions,
+  WalletAccountInfos,
+  WalletInfos,
+])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openDatabase());
 

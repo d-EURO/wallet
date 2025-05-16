@@ -43,6 +43,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       DeleteCurrentWalletEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoadingWallet: true));
 
+    await _walletService.deleteCurrentWallet();
     emit(HomeState(openWallet: null, isLoadingWallet: false));
   }
 

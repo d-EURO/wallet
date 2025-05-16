@@ -18,10 +18,13 @@ extension WalletStorage on AppDatabase {
       (select(walletAccountInfos)..where((row) => row.wallet.equals(walletId)))
           .get();
 
+  Future<int> deleteWallet(int walletId) =>
+      (delete(walletAccountInfos)..where((row) => row.wallet.equals(walletId)))
+          .go();
+
   Future<bool> get hasWallet =>
       select(walletInfos).get().then((result) => result.isNotEmpty);
 }
-
 
 @DataClassName("WalletInfo")
 class WalletInfos extends Table {

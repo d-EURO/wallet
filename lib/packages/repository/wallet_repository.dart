@@ -12,5 +12,5 @@ class WalletRepository {
   Future<WalletInfo?> getWalletById(int id) =>
       _appDatabase.getWalletById(id);
 
-
+  Future<void> deleteWallet(int id) => _appDatabase.deleteWallet(id);
 }

@@ -30,5 +30,11 @@ class WalletService{
     return getWalletById(id);
   }
 
+  Future<void> deleteCurrentWallet() async {
+    final id = _settingsRepository.currentWalletId!;
+    await _repository.deleteWallet(id);
+    await _settingsRepository.removeCurrentWalletId();
+  }
+
   bool hasWallet() => _settingsRepository.currentWalletId != null;
 }

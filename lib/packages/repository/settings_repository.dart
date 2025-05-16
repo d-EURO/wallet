@@ -8,6 +8,9 @@ class SettingsRepository {
   Future<bool> saveCurrentWalletId(int walletId) =>
       _sharedPreferences.setInt("currentWalletId", walletId);
 
+  Future<bool> removeCurrentWalletId() =>
+      _sharedPreferences.remove("currentWalletId");
+
   int? get currentWalletId => _sharedPreferences.getInt("currentWalletId");
 
   String get language => _sharedPreferences.getString("language") ?? "en";

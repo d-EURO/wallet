@@ -1,4 +1,6 @@
 import 'package:deuro_wallet/generated/i18n.dart';
+import 'package:deuro_wallet/packages/wallet/payment_uri.dart';
+import 'package:deuro_wallet/screens/send/send_page.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/styles/styles.dart';
@@ -114,7 +116,7 @@ class SectionBalance extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(left: 15, right: 15),
                     child: VerticalIconButton.extended(
-                      onPressed: () => presentQRScanner(context),
+                      onPressed: () => _presentQRReader(context),
                       icon: const Icon(Icons.qr_code, color: Colors.white),
                       label: S.of(context).pay_scan,
                     ),
@@ -131,4 +133,39 @@ class SectionBalance extends StatelessWidget {
           ),
         ),
       );
+
+  Future<void> _presentQRReader(BuildContext context) async {
+    QRData? result = await presentQRScanner(
+      context,
+      (code, _) =>
+          RegExp(r'(\b0x[a-fA-F0-9]{40}\b)').hasMatch(code!) // ||
+          // OpenCryptoPayService.isOpenCryptoPayQR(code),
+    );
+
+    if (result?.value == null) return;
+
+    // if (OpenCryptoPayService.isOpenCryptoPayQR(result)) {
+    //   try {
+    //     final res = await getIt
+    //         .get<OpenCryptoPayService>()
+    //         .getOpenCryptoPayInvoice(result);
+    //     if (context.mounted) {
+    //       await Navigator.of(context)
+    //           .pushNamed(Routes.sendOpenCryptoPay, arguments: res);
+    //     }
+    //   } on OpenCryptoPayException catch (e) {
+    //     getIt.get<BottomSheetService>().queueBottomSheet(
+    //         isModalDismissible: true,
+    //         widget: BottomSheetMessageDisplayWidget(
+    //           message: e.message.toString(),
+    //         ));
+    //   }
+    // } else
+    if (result!.value!.startsWith("0x")) {
+      context.push("/send", extra: SendRouteParams(receiver: result.value!));
+    } else {
+      final uri = ERC681URI.fromString(result.value!);
+      context.push("/send", extra: SendRouteParams(receiver: uri.address, amount: uri.amount));
+    }
+  }
 }

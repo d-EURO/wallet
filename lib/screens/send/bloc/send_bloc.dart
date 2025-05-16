@@ -16,7 +16,9 @@ part 'send_event.dart';
 part 'send_state.dart';
 
 class SendBloc extends Bloc<SendEvent, SendState> {
-  SendBloc(this._appStore, this._asset) : super(SendState()) {
+  SendBloc(this._appStore, this._asset,
+      {String receiver = "", String amount = "0"})
+      : super(SendState(receiver: receiver, amount: amount)) {
     on<ReceiverChanged>(_onReceiverChanged);
     on<AmountChangedAdd>(_onAmountAdd);
     on<AmountChangedDecimal>(_onAmountDecimal);
@@ -74,7 +76,6 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
   Future<void> _onSubmitted(
       SendSubmitted event, Emitter<SendState> emit) async {
-
     if (state.receiver.isEthereumAddress) {
       emit(state.copyWith(status: SendStatus.inProgress));
       try {
