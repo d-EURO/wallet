@@ -13,9 +13,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class SendView extends StatelessWidget {
-  const SendView({super.key});
+  SendView({super.key, String? receiver})
+      : receiverController = TextEditingController(text: receiver);
 
   static const _kPadding = EdgeInsets.only(left: 26, right: 26, bottom: 10);
+
+  final TextEditingController receiverController;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -24,7 +27,9 @@ class SendView extends StatelessWidget {
           leading: IconButton(
             onPressed: () => context.pop(),
             icon: Icon(
-              Icons.arrow_back,
+              Icons.arrow_back_ios_new,
+              color: DEuroColors.anthracite,
+              size: 24,
             ),
           ),
         ),
@@ -35,6 +40,7 @@ class SendView extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 26, right: 26, top: 26, bottom: 10),
                 child: TextField(
+                  controller: receiverController,
                   onChanged: (receiver) =>
                       context.read<SendBloc>().add(ReceiverChanged(receiver)),
                   inputFormatters: <TextInputFormatter>[

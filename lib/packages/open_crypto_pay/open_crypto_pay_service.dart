@@ -6,6 +6,8 @@ import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/open_crypto_pay/exceptions.dart';
 import 'package:deuro_wallet/packages/open_crypto_pay/lnurl.dart';
 import 'package:deuro_wallet/packages/open_crypto_pay/models.dart';
+import 'package:deuro_wallet/packages/utils/default_assets.dart';
+import 'package:deuro_wallet/packages/wallet/payment_uri.dart';
 import 'package:http/http.dart';
 
 class OpenCryptoPayService {
@@ -17,7 +19,6 @@ class OpenCryptoPayService {
 
   Future<String> commitOpenCryptoPayRequest(
     String txHex, {
-    required String txId,
     required OpenCryptoPayRequest request,
     required Asset asset,
   }) async {
@@ -29,7 +30,6 @@ class OpenCryptoPayService {
     queryParams['asset'] = asset.name;
     queryParams['method'] = _getMethod(asset);
     queryParams['hex'] = txHex;
-    queryParams['tx'] = txId;
 
     final response =
         await _httpClient.get(Uri.https(uri.authority, uri.path, queryParams));
@@ -67,7 +67,8 @@ class OpenCryptoPayService {
       receiverName: params.$1.displayName ?? "Unknown",
       expiry: params.$1.expiration.difference(DateTime.now()).inSeconds,
       callbackUrl: params.$1.callbackUrl,
-      amount: BigInt.parse(params.$1.amount),
+      amount: params.$1.amount,
+      amountSymbol: params.$1.amountSymbol,
       quote: params.$1.id,
       methods: params.$2,
     );
@@ -90,10 +91,11 @@ class OpenCryptoPayService {
       for (final transferAmountRaw in responseBody['transferAmounts'] as List) {
         final transferAmount = transferAmountRaw as Map;
         final method = transferAmount['method'] as String;
+        final minFee = transferAmount['minFee'] as num;
         methods[method] = [];
         for (final assetJson in transferAmount['assets'] as List) {
           final asset = OpenCryptoPayQuoteAsset.fromJson(
-              assetJson as Map<String, dynamic>);
+              assetJson as Map<String, dynamic>, minFee.toInt());
           methods[method]?.add(asset);
         }
       }
@@ -103,6 +105,8 @@ class OpenCryptoPayService {
       final quote = _OpenCryptoPayQuote.fromJson(
           responseBody['callback'] as String,
           responseBody['displayName'] as String?,
+          (responseBody['requestedAmount']['amount'] as num).toString(),
+          responseBody['requestedAmount']['asset'] as String,
           responseBody['quote'] as Map<String, dynamic>);
 
       return (quote, methods);
@@ -112,13 +116,22 @@ class OpenCryptoPayService {
     }
   }
 
-  Future<Uri> getOpenCryptoPayAddress(
+  Future<ERC681URI> getOpenCryptoPayAddress(
       OpenCryptoPayRequest request, Asset asset) async {
     final uri = Uri.parse(request.callbackUrl);
     final queryParams = Map.of(uri.queryParameters);
 
     queryParams['quote'] = request.quote;
-    queryParams['asset'] = asset.name;
+    if ([
+      dEUROBaseAsset.id,
+      dEUROOptimismAsset.id,
+      dEUROArbitrumAsset.id,
+      dEUROPolygonAsset.id
+    ].contains(asset.id)) {
+      queryParams['asset'] = dEUROAsset.name;
+    } else {
+      queryParams['asset'] = asset.name;
+    }
     queryParams['method'] = _getMethod(asset);
 
     final response =
@@ -133,19 +146,9 @@ class OpenCryptoPayService {
         }
       }
 
-      final result = Uri.parse(responseBody['uri'] as String);
-
-      if (result.queryParameters['amount'] != null) return result;
-
-      final newQueryParameters =
-          Map<String, dynamic>.from(result.queryParameters);
-
-      newQueryParameters['amount'] = _getAmountByAsset(request, asset);
-      return Uri(
-          scheme: result.scheme,
-          path: result.path.split("@").first,
-          queryParameters: newQueryParameters);
+      return ERC681URI.fromString(responseBody['uri'] as String);
     } else {
+      log(response.body);
       throw OpenCryptoPayException(
           'Failed to create Open CryptoPay Request. Status: ${response.statusCode} ${response.body}');
     }
@@ -168,13 +171,13 @@ class _OpenCryptoPayQuote {
   final String id;
   final DateTime expiration;
   final String amount;
+  final String amountSymbol;
 
   _OpenCryptoPayQuote(this.callbackUrl, this.displayName, this.id,
-      this.expiration, this.amount);
+      this.expiration, this.amount, this.amountSymbol);
 
-  _OpenCryptoPayQuote.fromJson(
-      this.callbackUrl, this.displayName, Map<String, dynamic> json)
+  _OpenCryptoPayQuote.fromJson(this.callbackUrl, this.displayName, this.amount,
+      this.amountSymbol, Map<String, dynamic> json)
       : id = json['id'] as String,
-        amount = '0',
         expiration = DateTime.parse(json['expiration'] as String);
 }

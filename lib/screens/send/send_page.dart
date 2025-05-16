@@ -21,7 +21,7 @@ class SendPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
         create: (_) => SendBloc(getIt<AppStore>(), dEUROAsset,
-            receiver: params.receiver, amount: params.amount),
-        child: SendView(),
+            receiver: params.receiver, amount: params.amount.isNotEmpty ? params.amount : "0"),
+        child: SendView(receiver: params.receiver),
       );
 }

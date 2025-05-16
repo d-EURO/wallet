@@ -1,3 +1,4 @@
+import 'package:deuro_wallet/packages/open_crypto_pay/open_crypto_pay_service.dart';
 import 'package:deuro_wallet/packages/repository/asset_repository.dart';
 import 'package:deuro_wallet/packages/repository/balance_repository.dart';
 import 'package:deuro_wallet/packages/repository/node_repository.dart';
@@ -59,6 +60,8 @@ void setupServices() {
 
   getIt.registerFactory(() => TransactionHistoryService(getIt<AppStore>(),
       getIt<AssetRepository>(), getIt<TransactionRepository>()));
+
+  getIt.registerFactory(() => OpenCryptoPayService());
 }
 
 void setupBlocs() {

@@ -1,5 +1,6 @@
 import 'package:deuro_wallet/di.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
+import 'package:deuro_wallet/packages/open_crypto_pay/models.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/screens/create_wallet/create_wallet_page.dart';
 import 'package:deuro_wallet/screens/dashboard/dashboard_page.dart';
@@ -9,6 +10,7 @@ import 'package:deuro_wallet/screens/restore_wallet/restore_wallet_page.dart';
 import 'package:deuro_wallet/screens/savings/savings_page.dart';
 import 'package:deuro_wallet/screens/savings_edit/savings_edit_page.dart';
 import 'package:deuro_wallet/screens/send/send_page.dart';
+import 'package:deuro_wallet/screens/send_invoice/send_invoice_page.dart';
 import 'package:deuro_wallet/screens/settings/settings_page.dart';
 import 'package:deuro_wallet/screens/settings_edit_node/settings_edit_node_page.dart';
 import 'package:deuro_wallet/screens/settings_languages/settings_languages_page.dart';
@@ -39,9 +41,17 @@ void setupRouter() {
           builder: (context, state) => DashboardPage(getIt<AppStore>())),
       GoRoute(path: "/receive", builder: (context, state) => ReceivePage()),
       GoRoute(
-          path: "/send",
-          builder: (context, state) => SendPage(
-              params: (state.extra as SendRouteParams?) ?? SendRouteParams())),
+        path: "/send",
+        builder: (context, state) => SendPage(
+            params: (state.extra as SendRouteParams?) ?? SendRouteParams()),
+        routes: [
+          GoRoute(
+            path: "/openCryptoPay",
+            builder: (context, state) =>
+                SendInvoicePage(request: state.extra as OpenCryptoPayRequest),
+          ),
+        ],
+      ),
       GoRoute(
         path: "/settings",
         routes: [

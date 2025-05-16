@@ -1,4 +1,9 @@
+import 'dart:developer';
+
+import 'package:deuro_wallet/di.dart';
 import 'package:deuro_wallet/generated/i18n.dart';
+import 'package:deuro_wallet/packages/open_crypto_pay/exceptions.dart';
+import 'package:deuro_wallet/packages/open_crypto_pay/open_crypto_pay_service.dart';
 import 'package:deuro_wallet/packages/wallet/payment_uri.dart';
 import 'package:deuro_wallet/screens/send/send_page.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
@@ -138,34 +143,32 @@ class SectionBalance extends StatelessWidget {
     QRData? result = await presentQRScanner(
       context,
       (code, _) =>
-          RegExp(r'(\b0x[a-fA-F0-9]{40}\b)').hasMatch(code!) // ||
-          // OpenCryptoPayService.isOpenCryptoPayQR(code),
+          RegExp(r'(\b0x[a-fA-F0-9]{40}\b)').hasMatch(code!) ||
+          OpenCryptoPayService.isOpenCryptoPayQR(code),
     );
 
     if (result?.value == null) return;
 
-    // if (OpenCryptoPayService.isOpenCryptoPayQR(result)) {
-    //   try {
-    //     final res = await getIt
-    //         .get<OpenCryptoPayService>()
-    //         .getOpenCryptoPayInvoice(result);
-    //     if (context.mounted) {
-    //       await Navigator.of(context)
-    //           .pushNamed(Routes.sendOpenCryptoPay, arguments: res);
-    //     }
-    //   } on OpenCryptoPayException catch (e) {
-    //     getIt.get<BottomSheetService>().queueBottomSheet(
-    //         isModalDismissible: true,
-    //         widget: BottomSheetMessageDisplayWidget(
-    //           message: e.message.toString(),
-    //         ));
-    //   }
-    // } else
-    if (result!.value!.startsWith("0x")) {
-      context.push("/send", extra: SendRouteParams(receiver: result.value!));
+    if (OpenCryptoPayService.isOpenCryptoPayQR(result!.value!)) {
+      try {
+        final res = await getIt<OpenCryptoPayService>()
+            .getOpenCryptoPayInvoice(result.value!);
+        if (context.mounted) {
+          context.push("/send/openCryptoPay", extra: res);
+        }
+      } on OpenCryptoPayException catch (e) {
+        log(e.message);
+      }
+    } else if (result.value!.startsWith("0x")) {
+      if (context.mounted) {
+        context.push("/send", extra: SendRouteParams(receiver: result.value!));
+      }
     } else {
       final uri = ERC681URI.fromString(result.value!);
-      context.push("/send", extra: SendRouteParams(receiver: uri.address, amount: uri.amount));
+      if (context.mounted) {
+        context.push("/send",
+            extra: SendRouteParams(receiver: uri.address, amount: uri.amount));
+      }
     }
   }
 }

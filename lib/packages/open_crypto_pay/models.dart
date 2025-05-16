@@ -1,5 +1,6 @@
 class OpenCryptoPayRequest {
-  final BigInt amount;
+  final String amount;
+  final String amountSymbol;
   final String receiverName;
   final int expiry;
   final String callbackUrl;
@@ -9,6 +10,7 @@ class OpenCryptoPayRequest {
 
   const OpenCryptoPayRequest({
     required this.amount,
+    required this.amountSymbol,
     required this.receiverName,
     required this.expiry,
     required this.callbackUrl,
@@ -20,10 +22,11 @@ class OpenCryptoPayRequest {
 class OpenCryptoPayQuoteAsset {
   final String symbol;
   final String amount;
+  final int gasFee;
 
-  const OpenCryptoPayQuoteAsset(this.symbol, this.amount);
+  const OpenCryptoPayQuoteAsset(this.symbol, this.amount, this.gasFee);
 
-  OpenCryptoPayQuoteAsset.fromJson(Map<String, dynamic> json)
+  OpenCryptoPayQuoteAsset.fromJson(Map<String, dynamic> json, this.gasFee)
       : symbol = json['asset'] as String,
         amount = json['amount'] as String;
 }
