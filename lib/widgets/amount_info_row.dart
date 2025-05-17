@@ -1,3 +1,4 @@
+import 'package:deuro_wallet/widgets/info_row.dart';
 import 'package:flutter/material.dart';
 
 class AmountInfoRow extends StatelessWidget {
@@ -15,35 +16,9 @@ class AmountInfoRow extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: padding ?? const EdgeInsets.only(top: 5, bottom: 5),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              "$title:",
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          Text(
-            amountString,
-            style: const TextStyle(
-              fontSize: 15,
-            ),
-          ),
-          Text(
-            " $currencySymbol",
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => InfoRow(
+        leading: title,
+        trailing: "$amountString $currencySymbol",
+        padding: padding,
+      );
 }

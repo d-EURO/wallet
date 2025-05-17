@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
@@ -12,8 +12,8 @@ import 'package:http/http.dart';
 
 class OpenCryptoPayService {
   static bool isOpenCryptoPayQR(String value) =>
-      value.toLowerCase().contains("lightning=lnurl") ||
-      value.toLowerCase().startsWith("lnurl");
+      value.toLowerCase().contains('lightning=lnurl') ||
+      value.toLowerCase().startsWith('lnurl');
 
   final Client _httpClient = Client();
 
@@ -22,7 +22,7 @@ class OpenCryptoPayService {
     required OpenCryptoPayRequest request,
     required Asset asset,
   }) async {
-    final uri = Uri.parse(request.callbackUrl.replaceAll("/cb/", "/tx/"));
+    final uri = Uri.parse(request.callbackUrl.replaceAll('/cb/', '/tx/'));
 
     final queryParams = Map.of(uri.queryParameters);
 
@@ -37,35 +37,37 @@ class OpenCryptoPayService {
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body) as Map;
 
-      if (body.keys.contains("txId")) return body["txId"] as String;
+      if (body.keys.contains('txId')) return body['txId'] as String;
       throw OpenCryptoPayException(body.toString());
     }
     throw OpenCryptoPayException(
-        "Unexpected status code ${response.statusCode} ${response.body}");
+        'Unexpected status code ${response.statusCode} ${response.body}');
   }
 
   Future<void> cancelOpenCryptoPayRequest(OpenCryptoPayRequest request) async {
-    final uri = Uri.parse(request.callbackUrl.replaceAll("/cb/", "/cancel/"));
+    final uri = Uri.parse(request.callbackUrl.replaceAll('/cb/', '/cancel/'));
 
+    developer.log('Canceling Open CryptoPay Invoice ${request.quote}',
+        name: 'OpenCryptoPayService.cancelOpenCryptoPayRequest', level: 800);
     await _httpClient.delete(uri);
   }
 
   Future<OpenCryptoPayRequest> getOpenCryptoPayInvoice(String lnUrl) async {
-    if (lnUrl.toLowerCase().startsWith("http")) {
+    if (lnUrl.toLowerCase().startsWith('http')) {
       final uri = Uri.parse(lnUrl);
       final params = uri.queryParameters;
-      if (!params.containsKey("lightning")) {
+      if (!params.containsKey('lightning')) {
         throw OpenCryptoPayNotSupportedException(uri.authority);
       }
 
-      lnUrl = params["lightning"] as String;
+      lnUrl = params['lightning'] as String;
     }
     final url = decodeLNURL(lnUrl);
     final params = await _getOpenCryptoPayParams(url);
 
     return OpenCryptoPayRequest(
-      receiverName: params.$1.displayName ?? "Unknown",
-      expiry: params.$1.expiration.difference(DateTime.now()).inSeconds,
+      receiverName: params.$1.displayName ?? 'Unknown',
+      expiration: params.$1.expiration,
       callbackUrl: params.$1.callbackUrl,
       amount: params.$1.amount,
       amountSymbol: params.$1.amountSymbol,
@@ -99,8 +101,6 @@ class OpenCryptoPayService {
           methods[method]?.add(asset);
         }
       }
-
-      log(responseBody.toString());
 
       final quote = _OpenCryptoPayQuote.fromJson(
           responseBody['callback'] as String,
@@ -148,17 +148,13 @@ class OpenCryptoPayService {
 
       return ERC681URI.fromString(responseBody['uri'] as String);
     } else {
-      log(response.body);
+      developer.log('Error occurred',
+          error: response.body,
+          name: 'OpenCryptoPayService.getOpenCryptoPayAddress',
+          level: 900);
       throw OpenCryptoPayException(
           'Failed to create Open CryptoPay Request. Status: ${response.statusCode} ${response.body}');
     }
-  }
-
-  String _getAmountByAsset(OpenCryptoPayRequest request, Asset asset) {
-    final method = _getMethod(asset);
-    return request.methods[method]!
-        .firstWhere((e) => e.symbol.toUpperCase() == asset.name.toUpperCase())
-        .amount;
   }
 
   String _getMethod(Asset asset) =>

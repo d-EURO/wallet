@@ -1,4 +1,4 @@
-import 'dart:developer' as dev;
+import 'dart:developer' as developer;
 import 'dart:typed_data';
 
 import 'package:deuro_wallet/generated/i18n.dart';
@@ -70,13 +70,13 @@ class _QRScannerState extends State<QRScanner> {
       //     );
       //   },
       // );
-      dev.log("QRCode Scanner Error", error: e);
+      developer.log("QRCode Scanner Error", error: e, name: "QRScanner._handleBarcode");
     }
   }
 
   void _handleBarcodeInternal(BarcodeCapture barcodes) {
     for (final barcode in barcodes.barcodes) {
-      dev.log(barcode.rawBytes.toString());
+      developer.log(barcode.rawBytes.toString(), name: "QRScanner._handleBarcodeInternal", level: 800);
       if (!widget.validateQR(barcode.rawValue, barcode.rawBytes)) continue;
       if (mounted && !popped) {
         setState(() => popped = true);

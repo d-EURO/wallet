@@ -1,11 +1,12 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
+import 'package:deuro_wallet/screens/send_invoice/bloc/expiry_cubit.dart';
 import 'package:deuro_wallet/screens/send_invoice/bloc/send_invoice_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/widgets/amount_info_row.dart';
 import 'package:deuro_wallet/widgets/blockchain_selector.dart';
-import 'package:deuro_wallet/widgets/standard_slide_button_widget.dart';
+import 'package:deuro_wallet/widgets/info_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,10 @@ class SendInvoiceView extends StatelessWidget {
         appBar: CupertinoNavigationBar(
           backgroundColor: Colors.transparent,
           leading: IconButton(
-            onPressed: () => context.pop(),
+            onPressed: () {
+              context.read<SendInvoiceBloc>().add(CancelInvoice());
+              context.pop();
+            },
             icon: Icon(
               Icons.arrow_back_ios_new,
               color: DEuroColors.anthracite,
@@ -74,14 +78,62 @@ class SendInvoiceView extends StatelessWidget {
                   amountString: state.fee,
                   currencySymbol: state.blockchain.nativeSymbol,
                 ),
-                Padding(
-                  padding: _kPadding,
-                  child: StandardSlideButton(
-                    onSlideComplete: () =>
-                        context.read<SendInvoiceBloc>().add(SendSubmitted()),
-                    buttonText: S.of(context).send,
+                BlocBuilder<ExpiryCubit, ExpiryState>(
+                  bloc: context.read<SendInvoiceBloc>().expiryCubit,
+                  builder: (context, state) => Column(
+                    children: [
+                      InfoRow(
+                        padding: _kPadding,
+                        leading: S.of(context).fee,
+                        trailing: "${state.secondsRemaining} Seconds",
+                      ),
+                      Padding(
+                        padding: _kPadding,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: FilledButton(
+                                    onPressed: () => context
+                                        .read<SendInvoiceBloc>()
+                                        .add(CancelInvoice()),
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      fixedSize: Size(double.infinity, 55),
+                                    ),
+                                    child: const Icon(
+                                      CupertinoIcons.xmark,
+                                      color: Colors.white,
+                                      size: 19,
+                                    )),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: FilledButton(
+                                onPressed: () => context
+                                    .read<SendInvoiceBloc>()
+                                    .add(SendSubmitted()),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  fixedSize: Size(double.infinity, 55),
+                                ),
+                                child: true
+                                    ? Text(
+                                  "Pay",
+                                  style: const TextStyle(fontSize: 16),
+                                )
+                                    : const CupertinoActivityIndicator(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                )
+                ),
               ],
             );
           }),

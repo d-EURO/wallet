@@ -7,7 +7,7 @@ void appendStringToArbFile(String fileName, String name, String text, {bool forc
   final arbObj = readArbFile(file);
 
   if (arbObj.containsKey(name) && !force) {
-    log("String $name already exists in $fileName!");
+    developer.log("String $name already exists in $fileName!");
     return;
   }
 

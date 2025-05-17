@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer' as dev;
+import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
@@ -17,7 +17,7 @@ part 'send_state.dart';
 
 class SendBloc extends Bloc<SendEvent, SendState> {
   SendBloc(this._appStore, this._asset,
-      {String receiver = "", String amount = "0"})
+      {String receiver = '', String amount = '0'})
       : super(SendState(receiver: receiver, amount: amount)) {
     on<ReceiverChanged>(_onReceiverChanged);
     on<AmountChangedAdd>(_onAmountAdd);
@@ -47,21 +47,21 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
   void _onAmountAdd(AmountChangedAdd event, Emitter<SendState> emit) {
     emit(state.copyWith(
-      amount: state.amount == "0"
+      amount: state.amount == '0'
           ? event.amount.toString()
-          : "${state.amount}${event.amount}",
+          : '${state.amount}${event.amount}',
     ));
   }
 
   void _onAmountDecimal(AmountChangedDecimal event, Emitter<SendState> emit) {
-    emit(state.copyWith(amount: "${state.amount.replaceAll(".", "")}."));
+    emit(state.copyWith(amount: '${state.amount.replaceAll('.', '')}.'));
   }
 
   void _onAmountRemove(AmountChangedDelete event, Emitter<SendState> emit) {
     emit(state.copyWith(
       amount: state.amount.length > 1
           ? state.amount.substring(0, state.amount.length - 1)
-          : "0",
+          : '0',
     ));
   }
 
@@ -90,11 +90,11 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         );
 
         final id = await transaction();
-        dev.log(id);
+        developer.log(id, name: 'SendBloc');
         // ToDo: Perform Send
         emit(state.copyWith(status: SendStatus.success));
       } catch (e) {
-        dev.log("Error during send!", error: e);
+        developer.log('Error during send!', error: e, name: 'SendBloc');
         emit(state.copyWith(status: SendStatus.failure));
       }
     }
@@ -110,8 +110,8 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         final estimatedGas = await client.estimateGas();
         final fee =
             (gasPrice.getInWei + BigInt.from(priorityFee)) * estimatedGas;
-        final feeString = fee < BigInt.parse("1000000000000")
-            ? "< 0.000001"
+        final feeString = fee < BigInt.parse('1000000000000')
+            ? '< 0.000001'
             : formatFixed(fee, 18, fractionalDigits: 6);
         add(FeeChanged(feeString));
       } on StateError catch (_) {}

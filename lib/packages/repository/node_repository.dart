@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/models/node.dart';
 import 'package:deuro_wallet/packages/storage/database.dart';
@@ -12,7 +12,8 @@ class NodeRepository {
 
   Future<void> saveNode(Node node) async {
     final exists = await exitsNode(node);
-    log("Node for ${node.name} exists: $exists");
+    developer.log('Node for ${node.name} exists: $exists',
+        name: 'NodeRepository.saveNode');
     if (!exists) await insertNode(node);
   }
 

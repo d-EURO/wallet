@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/di.dart';
 import 'package:deuro_wallet/generated/i18n.dart';
@@ -157,7 +157,8 @@ class SectionBalance extends StatelessWidget {
           context.push("/send/openCryptoPay", extra: res);
         }
       } on OpenCryptoPayException catch (e) {
-        log(e.message);
+        developer.log('Error during Open CryptoPay',
+            error: e, name: 'SectionBalance._presentQRReader');
       }
     } else if (result.value!.startsWith("0x")) {
       if (context.mounted) {

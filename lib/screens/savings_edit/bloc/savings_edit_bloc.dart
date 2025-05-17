@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer' as dev;
+import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/constants.dart';
 import 'package:deuro_wallet/models/asset.dart';
@@ -10,7 +10,6 @@ import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
 import 'package:equatable/equatable.dart';
-import 'package:erc20/erc20.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
@@ -46,15 +45,15 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
 
   void _onAmountAdd(AmountChangedAdd event, Emitter<SavingsEditState> emit) {
     emit(state.copyWith(
-      amount: state.amount == "0"
+      amount: state.amount == '0'
           ? event.amount.toString()
-          : "${state.amount}${event.amount}",
+          : '${state.amount}${event.amount}',
     ));
   }
 
   void _onAmountDecimal(
       AmountChangedDecimal event, Emitter<SavingsEditState> emit) {
-    emit(state.copyWith(amount: "${state.amount.replaceAll(".", "")}."));
+    emit(state.copyWith(amount: '${state.amount.replaceAll('.', '')}.'));
   }
 
   void _onAmountRemove(
@@ -62,25 +61,12 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
     emit(state.copyWith(
       amount: state.amount.length > 1
           ? state.amount.substring(0, state.amount.length - 1)
-          : "0",
+          : '0',
     ));
   }
 
   void _onFeeChanged(FeeChanged event, Emitter<SavingsEditState> emit) {
     emit(state.copyWith(fee: event.fee));
-  }
-
-  Future<void> _onLoadIsEnabled(LoadIsEnabled event, Emitter<SavingsEditState> emit) async {
-    try {
-      final dEuro = ERC20(
-          address: EthereumAddress.fromHex(dEUROAsset.address), client: client);
-
-      final allowance = await dEuro.allowance(_appStore.wallet.primaryAccount.primaryAddress.address,
-          EthereumAddress.fromHex(savingsGatewayAddress));
-      emit(state.copyWith(isEnabled: allowance > BigInt.zero));
-    } catch (e) {
-      dev.log("Error during loading enabled", error: e);
-    }
   }
 
   Future<void> _onSubmitted(
@@ -91,7 +77,7 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
       final amount = parseFixed(state.amount, _asset.decimals);
 
       // final frontendGateway = getFrontendGateway(client);
-      // final frontendCode = Uint8List.fromList(sha256.convert(utf8.encode("wallet")).bytes);
+      // final frontendCode = Uint8List.fromList(sha256.convert(utf8.encode('wallet')).bytes);
       // dev.log(bytesToHex(frontendCode));
       // final txId = await frontendGateway.registerFrontendCode((frontendCode: frontendCode), credentials: _appStore.wallet.primaryAccount.primaryAddress);
 
@@ -106,10 +92,10 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
               target: _appStore.wallet.primaryAccount.primaryAddress.address,
             ), credentials: _appStore.wallet.primaryAccount.primaryAddress));
 
-      dev.log(txId);
+      developer.log(txId, name: 'SavingsEditBloc');
       emit(state.copyWith(status: SendStatus.success));
     } catch (e) {
-      dev.log("Error during send!", error: e);
+      developer.log('Error during send!', error: e, name: 'SavingsEditBloc');
       emit(state.copyWith(status: SendStatus.failure));
     }
   }
@@ -122,7 +108,7 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
         final gasPrice = await client.getGasPrice();
         final estimatedGas = await client.estimateGas(
             data: hexToBytes(
-                "0x753ef93c0000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000000000000000004265596f75724f776e42616e6b"));
+                '0x753ef93c0000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000000000000000004265596f75724f776e42616e6b'));
         final fee =
             (gasPrice.getInWei + BigInt.from(priorityFee)) * estimatedGas;
         final feeString = formatFixed(fee, 18, fractionalDigits: 6);

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer' as dev;
+import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
@@ -10,7 +10,7 @@ import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
 import 'package:deuro_wallet/packages/wallet/create_transaction.dart';
-import 'package:deuro_wallet/packages/wallet/transaction_priority.dart';
+import 'package:deuro_wallet/screens/send_invoice/bloc/expiry_cubit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +20,8 @@ part 'send_invoice_state.dart';
 class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
   SendInvoiceBloc(this._appStore, this._openCryptoPayService,
       {required OpenCryptoPayRequest invoice})
-      : super(SendInvoiceState(invoice: invoice)) {
+      : expiryCubit = ExpiryCubit(invoice.expiration),
+        super(SendInvoiceState(invoice: invoice)) {
     on<ChainChanged>(_onChainChanged);
     on<FeeChanged>(_onFeeChanged);
     on<CancelInvoice>(_onCancelInvoice);
@@ -34,6 +35,8 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
     _feeTimer?.cancel();
     return super.close();
   }
+
+  final ExpiryCubit expiryCubit;
 
   final AppStore _appStore;
   final OpenCryptoPayService _openCryptoPayService;
@@ -77,13 +80,13 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
       );
 
       final id = await _openCryptoPayService.commitOpenCryptoPayRequest(
-          "0x$transaction",
+          '0x$transaction',
           request: state.invoice,
           asset: asset);
-      dev.log(id);
+      developer.log(id, name: 'SendInvoiceBloc');
       emit(state.copyWith(status: SendStatus.success));
     } catch (e) {
-      dev.log("Error during send!", error: e);
+      developer.log('Error during send!', error: e, name: 'SendInvoiceBloc');
       emit(state.copyWith(status: SendStatus.failure));
     }
   }
@@ -98,8 +101,8 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
         final estimatedGas = await client.estimateGas();
         final fee =
             (gasPrice.getInWei + BigInt.from(priorityFee)) * estimatedGas;
-        final feeString = fee < BigInt.parse("1000000000000")
-            ? "< 0.000001"
+        final feeString = fee < BigInt.parse('1000000000000')
+            ? '< 0.000001'
             : formatFixed(fee, 18, fractionalDigits: 6);
         add(FeeChanged(feeString));
       } on StateError catch (_) {}

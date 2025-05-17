@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer' as dev;
+import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/packages/contracts/contracts.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
@@ -48,7 +48,8 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
           EthereumAddress.fromHex(savingsGatewayAddress));
       emit(state.copyWith(isEnabled: allowance > BigInt.zero));
     } catch (e) {
-      dev.log("Error during loading enabled", error: e);
+      developer.log('Error during loading enabled',
+          error: e, name: 'SavingsBloc');
     }
   }
 
@@ -65,10 +66,12 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
               'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
               radix: 16),
           credentials: _appStore.wallet.primaryAccount.primaryAddress);
-      dev.log("Infinite approval for Savings Contract: $txId");
+      developer.log('Infinite approval for Savings Contract: $txId',
+          name: 'SavingsBloc');
       emit(state.copyWith(isEnabled: true));
     } catch (e) {
-      dev.log("Error during loading enabled", error: e);
+      developer.log('Error during loading enabled',
+          error: e, name: 'SavingsBloc');
     }
   }
 

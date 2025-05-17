@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/packages/storage/asset_storage.dart';
@@ -12,7 +12,7 @@ class AssetRepository {
 
   Future<void> saveAsset(Asset asset) async {
     final exists = await exitsAsset(asset);
-    log("${asset.name} $exists");
+    developer.log('${asset.name} $exists', name: 'AssetRepository.saveAsset');
     if (!exists) await insertAsset(asset);
   }
 

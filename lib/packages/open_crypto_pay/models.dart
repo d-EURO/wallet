@@ -2,7 +2,7 @@ class OpenCryptoPayRequest {
   final String amount;
   final String amountSymbol;
   final String receiverName;
-  final int expiry;
+  final DateTime expiration;
   final String callbackUrl;
   final String quote;
   final Map<String, List<OpenCryptoPayQuoteAsset>> methods;
@@ -12,7 +12,7 @@ class OpenCryptoPayRequest {
     required this.amount,
     required this.amountSymbol,
     required this.receiverName,
-    required this.expiry,
+    required this.expiration,
     required this.callbackUrl,
     required this.quote,
     required this.methods,

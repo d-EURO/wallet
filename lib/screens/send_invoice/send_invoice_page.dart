@@ -19,6 +19,9 @@ class SendInvoicePage extends StatelessWidget {
           getIt<OpenCryptoPayService>(),
           invoice: request,
         ),
-        child: SendInvoiceView(),
+        child: BlocProvider(
+          create: (context) => context.read<SendInvoiceBloc>().expiryCubit,
+          child: SendInvoiceView(),
+        ),
       );
 }

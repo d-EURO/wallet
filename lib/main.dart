@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/di.dart';
 import 'package:deuro_wallet/generated/i18n.dart';
@@ -63,9 +63,9 @@ class _DEuroWalletState extends State<DEuroWallet> {
         .updateERC20Balances(getIt<AppStore>().primaryAddress);
   }
 
-  void _onInactive() => log('inactive');
+  void _onInactive() => developer.log('inactive', name: 'AppLifecycleListener');
 
-  void _onHidden() => log('hidden');
+  void _onHidden() => developer.log('hidden', name: 'AppLifecycleListener');
 
   void _onPaused() {
     getIt<BalanceService>().cancelSync();
