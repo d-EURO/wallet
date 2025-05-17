@@ -81,7 +81,6 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
           request: state.invoice,
           asset: asset);
       dev.log(id);
-      // ToDo: Perform Send
       emit(state.copyWith(status: SendStatus.success));
     } catch (e) {
       dev.log("Error during send!", error: e);

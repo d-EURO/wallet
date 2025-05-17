@@ -76,7 +76,7 @@ class RestoreWalletView extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       child: SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
+                        child: FilledButton(
                           onPressed: () => context
                               .read<RestoreWalletCubit>()
                               .restoreWalletFromSeedQR(context),
@@ -107,20 +107,20 @@ class RestoreWalletView extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 20, bottom: 20),
                         child: SizedBox(
                           width: double.infinity,
-                          child: ElevatedButton(
+                          child: FilledButton(
                             onPressed: state.isSeedReady && !state.isLoading
                                 ? () => context
                                     .read<RestoreWalletCubit>()
                                     .restoreWallet(_controller.text)
                                 : null,
-                            style: kFullwidthPrimaryButtonStyle,
+                            style: kFullwidthBlueButtonStyle,
                             child: state.isLoading
                                 ? CupertinoActivityIndicator(
                                     color: DEuroColors.dEuroGold,
                                   )
                                 : Text(S.of(context).create_wallet,
                                     textAlign: TextAlign.center,
-                                    style: kPrimaryButtonTextStyle),
+                                    style: kFullwidthBlueButtonTextStyle),
                           ),
                         ),
                       ),
