@@ -1,6 +1,7 @@
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/packages/utils/asset_logo.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
+import 'package:deuro_wallet/styles/styles.dart';
 import 'package:deuro_wallet/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 
@@ -53,24 +54,21 @@ class BalanceCard extends StatelessWidget {
                             children: [
                               Text(
                                 asset.name,
-                                style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'Lato',
-                                    color: Colors.white),
+                                style: kPageTitleTextStyle.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
                               ),
                               Text(
                                 asset.symbol,
-                                style: const TextStyle(
-                                    fontFamily: 'Lato', color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                               )
                             ],
                           ))),
                   Text(
                     formatFixed(balance, asset.decimals,
                         fractionalDigits: 4, trimZeros: false),
-                    style: const TextStyle(
-                        fontSize: 16, fontFamily: 'Lato', color: Colors.white),
+                    style: kPageTitleTextStyle.copyWith(color: Colors.white),
                   )
                 ],
               ),

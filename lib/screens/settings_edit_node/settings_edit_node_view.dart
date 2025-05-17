@@ -28,11 +28,7 @@ class SettingsNodesView extends StatelessWidget {
           ),
           middle: Text(
             blockchain.name,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Satoshi',
-            ),
+            style: kPageTitleTextStyle,
           ),
           border: null,
         ),

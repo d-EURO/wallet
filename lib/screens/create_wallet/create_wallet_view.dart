@@ -47,8 +47,7 @@ class CreateWalletView extends StatelessWidget {
                           child: Text(
                             S.of(context).create_wallet_subtitle,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                fontSize: 14, color: DEuroColors.neutralGrey),
+                            style: kSubtitleTextStyle,
                           ),
                         ),
                         Padding(
@@ -81,10 +80,7 @@ class CreateWalletView extends StatelessWidget {
                                       S
                                           .of(context)
                                           .create_wallet_recovery_key_subtitle,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: DEuroColors.neutralGrey,
-                                      ),
+                                      style: kSubtitleTextStyle,
                                     ),
                                   ],
                                 ),
@@ -104,10 +100,7 @@ class CreateWalletView extends StatelessWidget {
                             onPressed: () => _copySeed(state.wallet!.seed),
                             child: Text(
                               S.of(context).copy_seed,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: DEuroColors.dEuroBlue,
-                              ),
+                              style: kPageTitleTextStyle.copyWith(color: DEuroColors.dEuroBlue),
                             ),
                           ),
                         ),

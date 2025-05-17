@@ -5,6 +5,7 @@ import 'package:deuro_wallet/packages/utils/asset_logo.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/screens/settings/widgets/settings_section.dart';
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/styles/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,11 +28,7 @@ class SettingsNodesPage extends StatelessWidget {
           ),
           middle: Text(
             S.of(context).settings_nodes,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Satoshi',
-            ),
+            style: kPageTitleTextStyle,
           ),
           border: null,
         ),

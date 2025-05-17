@@ -1,4 +1,5 @@
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/styles/styles.dart';
 import 'package:flutter/material.dart';
 
 class StandardSlideButton extends StatefulWidget {
@@ -37,12 +38,14 @@ class _StandardSlideButtonState extends State<StandardSlideButton> {
             alignment: Alignment.centerLeft,
             children: [
               Center(
-                  child: Text(widget.buttonText,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white
-                      ))),
+                child: Text(
+                  widget.buttonText,
+                  style: kPageTitleTextStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               Positioned(
                 left: sideMargin + _dragPosition,
                 child: GestureDetector(

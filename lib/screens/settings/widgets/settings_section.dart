@@ -1,4 +1,5 @@
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/styles/styles.dart';
 import 'package:flutter/material.dart';
 
 class SettingOption {
@@ -33,10 +34,7 @@ class SettingsSections extends StatelessWidget {
               Row(children: [
                 Text(
                   title!,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: DEuroColors.neutralGrey,
-                  ),
+                  style: kSubtitleTextStyle,
                 )
               ]),
             Container(

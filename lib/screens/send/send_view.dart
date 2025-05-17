@@ -92,9 +92,9 @@ class SendView extends StatelessWidget {
                 ),
                 Spacer(),
                 BlockchainSelector(
-                  onPressed: () => context
+                  onPressed: (blockchain) => context
                       .read<SendBloc>()
-                      .add(ChainChanged(Blockchain.optimism)),
+                      .add(ChainChanged(blockchain)),
                   blockchain: state.blockchain,
                   padding: _kPadding,
                 ),

@@ -5,7 +5,7 @@ enum Blockchain {
   polygon(137, "Polygon", "POL"),
   base(8453, "Base", "ETH"),
   optimism(10, "Optimism", "ETH"),
-  arbitrum(42161, "Arbitrum One", "ETH");
+  arbitrum(42161, "Arbitrum", "ETH");
 
   const Blockchain(this.chainId, this.name, this.nativeSymbol);
 

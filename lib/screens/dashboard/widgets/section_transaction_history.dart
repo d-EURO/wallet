@@ -2,6 +2,7 @@ import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/models/transaction.dart';
 import 'package:deuro_wallet/screens/dashboard/widgets/transaction_row.dart';
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,8 +33,7 @@ class SectionTransactionHistory extends StatelessWidget {
                 children: [
                   Text(
                     S.of(context).transactions,
-                    style:
-                        TextStyle(fontSize: 14, color: DEuroColors.neutralGrey),
+                    style: kSubtitleTextStyle,
                   ),
                   Spacer(),
                   CircleAvatar(

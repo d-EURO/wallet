@@ -1,6 +1,7 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/screens/settings_seed/bloc/settings_seed_cubit.dart';
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/styles/styles.dart';
 import 'package:deuro_wallet/widgets/icons.dart';
 import 'package:deuro_wallet/widgets/seed_blur_card.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,11 +28,7 @@ class SettingsSeedView extends StatelessWidget {
           ),
           middle: Text(
             S.of(context).seed,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Satoshi',
-            ),
+            style: kPageTitleTextStyle,
           ),
           border: null,
         ),
@@ -64,8 +61,7 @@ class SettingsSeedView extends StatelessWidget {
                       child: Text(
                         S.of(context).create_wallet_subtitle,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontSize: 14, color: DEuroColors.neutralGrey),
+                        style: kSubtitleTextStyle,
                       ),
                     ),
                     Padding(
@@ -98,10 +94,7 @@ class SettingsSeedView extends StatelessWidget {
                                   S
                                       .of(context)
                                       .create_wallet_recovery_key_subtitle,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: DEuroColors.neutralGrey,
-                                  ),
+                                  style: kSubtitleTextStyle,
                                 ),
                               ],
                             ),
@@ -121,10 +114,7 @@ class SettingsSeedView extends StatelessWidget {
                             _copySeed(context.read<SettingsSeedCubit>().seed),
                         child: Text(
                           S.of(context).copy_seed,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: DEuroColors.dEuroBlue,
-                          ),
+                          style: kPageTitleTextStyle.copyWith(color: DEuroColors.dEuroBlue),
                         ),
                       ),
                     ),

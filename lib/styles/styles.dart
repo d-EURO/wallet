@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 
 const kPrimaryButtonTextStyle = TextStyle(fontSize: 16, color: Colors.white);
 
+const kPageTitleTextStyle =
+    TextStyle(fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Satoshi');
+
+const kSubtitleTextStyle = TextStyle(fontSize: 14, color: DEuroColors.neutralGrey);
+
 const kActionButtonTextStyle = TextStyle(fontSize: 12, color: Colors.white);
 
 final kFullwidthPrimaryButtonStyle = ElevatedButton.styleFrom(

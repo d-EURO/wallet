@@ -109,11 +109,7 @@ class DashboardPage extends StatelessWidget {
                                             children: [
                                               Text(
                                                 "Cash Holdings",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color:
-                                                      DEuroColors.neutralGrey,
-                                                ),
+                                                style: kSubtitleTextStyle,
                                               ),
                                               Spacer(),
                                               // ActionButton(
