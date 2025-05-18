@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:deuro_wallet/constants.dart';
 import 'package:deuro_wallet/packages/contracts/contracts.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
@@ -17,6 +18,7 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
     on<LoadSavingsBalance>(_onLoadSavingsBalance);
     on<EnableSavings>(_onEnableSavings);
     on<LoadIsEnabled>(_onLoadIsEnabled);
+    on<CollectInterest>(_onCollectInterest);
 
     _client = _appStore.getClient(1);
     _savingsGateway = getSavingsGateway(_client);
@@ -58,7 +60,7 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
       EnableSavings event, Emitter<SavingsState> emit) async {
     if (state.isActivatingSavings) return;
     try {
-      emit(state.copyWith(isActivatingSavings: false));
+      emit(state.copyWith(isActivatingSavings: true));
       final dEuro = ERC20(
           address: EthereumAddress.fromHex(dEUROAsset.address),
           client: _client);
@@ -73,8 +75,32 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
           name: 'SavingsBloc');
       emit(state.copyWith(isEnabled: true, isActivatingSavings: false));
     } catch (e) {
-      developer.log('Error during loading enabled',
-          error: e, name: 'SavingsBloc');
+      developer.log('Error during enabling savings',
+          error: e, name: 'SavingsBloc._onEnableSavings');
+    }
+  }
+
+  Future<void> _onCollectInterest(
+      CollectInterest event, Emitter<SavingsState> emit) async {
+    if (state.isCollectingInterest) return;
+    try {
+      emit(state.copyWith(isCollectingInterest: true));
+      final savingsGateway = getSavingsGateway(_client);
+      final ownerAddress = EthereumAddress.fromHex(_appStore.primaryAddress);
+
+      final interestToCollect =
+          await savingsGateway.accruedInterest((accountOwner: ownerAddress,));
+
+      final txId = await savingsGateway.withdraw$2((
+        amount: interestToCollect,
+        frontendCode: frontendCode,
+        target: ownerAddress,
+      ), credentials: _appStore.wallet.primaryAccount.primaryAddress);
+      developer.log('Collect Interest in TX($txId)', name: 'SavingsBloc');
+      emit(state.copyWith(isEnabled: true, isCollectingInterest: false));
+    } catch (e) {
+      developer.log('Error during collecting interest',
+          error: e, name: 'SavingsBloc._onCollectInterest');
     }
   }
 

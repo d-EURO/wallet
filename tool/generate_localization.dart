@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 import 'dart:io';
 import 'dart:convert';
 
+import 'alphabetize_localization.dart';
 import 'localization/localization_constants.dart';
 import 'utils/utils.dart';
 
@@ -13,6 +14,8 @@ const srcDir = 'srcDir';
 const defaultLocale = 'en';
 
 Future<void> main(List<String> args) async {
+  alphabetizeLocalization();
+
   final extraInfo = args.isNotEmpty ?
   args.fold(<String, dynamic>{}, (Map<String, dynamic> acc, String arg) {
     final parts = arg.split('=');

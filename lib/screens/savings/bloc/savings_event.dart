@@ -18,3 +18,7 @@ class LoadIsEnabled extends SavingsEvent {
 final class LoadSavingsBalance extends SavingsEvent {
   const LoadSavingsBalance();
 }
+
+final class CollectInterest extends SavingsEvent {
+  const CollectInterest();
+}

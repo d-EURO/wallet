@@ -1,11 +1,13 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
+import 'package:deuro_wallet/screens/savings/bloc/savings_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/styles/styles.dart';
 import 'package:deuro_wallet/widgets/action_button.dart';
 import 'package:deuro_wallet/widgets/chain_asset_icon.dart';
 import 'package:deuro_wallet/widgets/hide_amount_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class SectionBalance extends StatelessWidget {
@@ -38,7 +40,7 @@ class SectionBalance extends StatelessWidget {
                         color: Colors.white,
                         onPressed: () => context.pop(),
                         iconSize: 18,
-                        icon: const Icon(Icons.arrow_back),
+                        icon: const Icon(Icons.arrow_back_ios_new),
                       ),
                     ),
                     Spacer(),
@@ -102,7 +104,8 @@ class SectionBalance extends StatelessWidget {
                         ActionButton(
                           icon: Icons.savings,
                           label: S.of(context).savings_enable,
-                          onPressed: () {},
+                          onPressed: () =>
+                              context.read<SavingsBloc>().add(EnableSavings()),
                           buttonStyle: kBalanceBarActionButtonStyle,
                         ),
                       ],
@@ -121,7 +124,7 @@ class SectionBalance extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Interest to be collected",
+                        S.of(context).interest_to_be_collected,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white.withAlpha(153),
@@ -151,8 +154,10 @@ class SectionBalance extends StatelessWidget {
                             Spacer(),
                             ActionButton(
                               icon: Icons.circle_outlined,
-                              label: "Collect",
-                              onPressed: () {},
+                              label: S.of(context).collect_interest,
+                              onPressed: () => context
+                                  .read<SavingsBloc>()
+                                  .add(CollectInterest()),
                               buttonStyle: kBalanceBarActionButtonStyle,
                             ),
                           ],

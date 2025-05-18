@@ -30,8 +30,7 @@ class SavingsEditView extends StatelessWidget {
         ),
         body: SafeArea(
           child: BlocBuilder<SavingsEditBloc, SavingsEditState>(
-              builder: (context, state) {
-            return Column(children: [
+            builder: (context, state) => Column(children: [
               Padding(
                 padding: const EdgeInsets.only(left: 26, right: 26, top: 10),
                 child: Text(
@@ -65,8 +64,8 @@ class SavingsEditView extends StatelessWidget {
                       : S.of(context).savings_remove,
                 ),
               )
-            ]);
-          }),
+            ]),
+          ),
         ),
       );
 }
