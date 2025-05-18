@@ -40,7 +40,9 @@ void setupRouter() {
       GoRoute(
           path: "/dashboard",
           builder: (context, state) => DashboardPage(getIt<AppStore>())),
-      GoRoute(path: "/receive", builder: (context, state) => ReceivePage()),
+      GoRoute(
+          path: "/receive",
+          builder: (context, state) => ReceivePage(isBottomSheet: false)),
       GoRoute(
         path: "/send",
         builder: (context, state) => SendPage(

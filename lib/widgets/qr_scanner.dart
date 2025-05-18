@@ -2,9 +2,10 @@ import 'dart:developer' as developer;
 import 'dart:typed_data';
 
 import 'package:deuro_wallet/generated/i18n.dart';
+import 'package:deuro_wallet/widgets/handlebars.dart';
 import 'package:fast_scanner/fast_scanner.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 typedef FuncValidateQR = bool Function(String? code, List<int>? rawBytes);
 
@@ -28,10 +29,10 @@ Future<QRData?> presentQRScanner(BuildContext context,
     [FuncValidateQR? validateQR]) async {
   isQrScannerShown = true;
   try {
-    final result = await Navigator.of(context).push<QRData>(
-      MaterialPageRoute(
-        builder: (_) => QRScanner(validateQR: validateQR ?? _defaultQRValidate),
-      ),
+    final result = await showCupertinoSheet<QRData>(
+      context: context,
+      pageBuilder: (_) =>
+          QRScanner(validateQR: validateQR ?? _defaultQRValidate),
     );
     isQrScannerShown = false;
     return result;
@@ -70,13 +71,15 @@ class _QRScannerState extends State<QRScanner> {
       //     );
       //   },
       // );
-      developer.log("QRCode Scanner Error", error: e, name: "QRScanner._handleBarcode");
+      developer.log("QRCode Scanner Error",
+          error: e, name: "QRScanner._handleBarcode");
     }
   }
 
   void _handleBarcodeInternal(BarcodeCapture barcodes) {
     for (final barcode in barcodes.barcodes) {
-      developer.log("${barcode.rawValue} - ${barcode.rawBytes}", name: "QRScanner._handleBarcodeInternal", level: 800);
+      developer.log("${barcode.rawValue} - ${barcode.rawBytes}",
+          name: "QRScanner._handleBarcodeInternal", level: 800);
       if (!widget.validateQR(barcode.rawValue, barcode.rawBytes)) continue;
       if (mounted && !popped) {
         setState(() => popped = true);
@@ -93,21 +96,31 @@ class _QRScannerState extends State<QRScanner> {
         body: Stack(
           children: [
             MobileScanner(onDetect: _handleBarcode, controller: ctrl),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: IconButton(
-                  style: IconButton.styleFrom(backgroundColor: Colors.black26),
-                  padding: const EdgeInsets.all(10),
-                  icon: const Icon(
-                    Icons.close,
-                    size: 25,
-                    color: Colors.white,
-                  ),
-                  onPressed: context.pop,
-                ),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Handlebars.horizontal(context)],
             ),
+            // SafeArea(
+            //   child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.end,
+            //     children: [
+            //       Padding(
+            //         padding: const EdgeInsets.only(right: 10),
+            //         child: IconButton(
+            //           style:
+            //               IconButton.styleFrom(backgroundColor: Colors.black26),
+            //           padding: const EdgeInsets.all(10),
+            //           icon: const Icon(
+            //             Icons.close,
+            //             size: 25,
+            //             color: Colors.white,
+            //           ),
+            //           onPressed: context.pop,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -120,7 +133,8 @@ class _QRScannerState extends State<QRScanner> {
                       child: Center(
                           child: Text(
                         S.of(context).scan_qr_code,
-                        style: const TextStyle(fontSize: 20, color: Colors.white),
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.white),
                       )),
                     ),
                   ),

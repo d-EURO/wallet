@@ -3,23 +3,26 @@ import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/wallet/payment_uri.dart';
 import 'package:deuro_wallet/screens/receive/widgets/qr_address_widget.dart';
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/widgets/handlebars.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ReceivePage extends StatelessWidget {
-  const ReceivePage({super.key});
+  const ReceivePage({super.key, this.isBottomSheet = true});
+
+  final bool isBottomSheet;
 
   @override
   Widget build(BuildContext context) {
     final address = getIt<AppStore>().primaryAddress;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: isBottomSheet ? null : AppBar(
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: Icon(
-            Icons.arrow_back,
+            Icons.arrow_back_ios_new,
             color: DEuroColors.anthracite,
           ),
         ),
@@ -27,7 +30,8 @@ class ReceivePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(width: double.infinity),
+            if (isBottomSheet) Handlebars.horizontal(context),
+            SizedBox(width: double.infinity, height: isBottomSheet ? 20 : 0,),
             QRAddressWidget(
               uri: EthereumURI(address: address, amount: '').toString(),
               subtitle: address,

@@ -1,3 +1,4 @@
+import 'package:deuro_wallet/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -15,9 +16,9 @@ class QRAddressWidget extends StatelessWidget {
             data: uri,
             // errorCorrectionLevel: errorCorrectionLevel,
             size: 300,
-            eyeStyle: const QrEyeStyle(color: Colors.black),
+            eyeStyle: const QrEyeStyle(color: DEuroColors.anthracite),
             dataModuleStyle: const QrDataModuleStyle(
-              color: Colors.black,
+              color: DEuroColors.anthracite,
             ),
           ),
           Padding(

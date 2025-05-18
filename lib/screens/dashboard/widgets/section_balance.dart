@@ -6,6 +6,7 @@ import 'package:deuro_wallet/packages/open_crypto_pay/exceptions.dart';
 import 'package:deuro_wallet/packages/open_crypto_pay/open_crypto_pay_service.dart';
 import 'package:deuro_wallet/packages/service/dfx/dfx_service.dart';
 import 'package:deuro_wallet/packages/wallet/payment_uri.dart';
+import 'package:deuro_wallet/screens/receive/receive_page.dart';
 import 'package:deuro_wallet/screens/send/send_page.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
@@ -14,6 +15,7 @@ import 'package:deuro_wallet/widgets/action_button.dart';
 import 'package:deuro_wallet/widgets/hide_amount_text.dart';
 import 'package:deuro_wallet/widgets/qr_scanner.dart';
 import 'package:deuro_wallet/widgets/vertical_icon_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -44,14 +46,16 @@ class SectionBalance extends StatelessWidget {
                       child: ActionButton(
                         icon: Icons.credit_card,
                         label: S.of(context).deposit,
-                        onPressed: () => getIt<DFXService>().launchProvider(context, true),
+                        onPressed: () =>
+                            getIt<DFXService>().launchProvider(context, true),
                         buttonStyle: kBalanceBarActionButtonStyle,
                       ),
                     ),
                     ActionButton(
                       icon: Icons.account_balance,
                       label: S.of(context).withdraw,
-                      onPressed: () => getIt<DFXService>().launchProvider(context, false),
+                      onPressed: () =>
+                          getIt<DFXService>().launchProvider(context, false),
                       buttonStyle: kBalanceBarActionButtonStyle,
                     ),
                     Spacer(),
@@ -115,7 +119,8 @@ class SectionBalance extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   VerticalIconButton(
-                    onPressed: () => context.push("/receive"),
+                    onPressed: () => showCupertinoSheet(
+                        context: context, pageBuilder: (_) => ReceivePage()),
                     icon: const Icon(Icons.arrow_downward, color: Colors.white),
                     label: S.of(context).receive,
                   ),
