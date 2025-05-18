@@ -15,6 +15,7 @@ part 'savings_state.dart';
 class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
   SavingsBloc(this._appStore) : super(SavingsState()) {
     on<LoadSavingsBalance>(_onLoadSavingsBalance);
+    on<EnableSavings>(_onEnableSavings);
     on<LoadIsEnabled>(_onLoadIsEnabled);
 
     _client = _appStore.getClient(1);
@@ -54,8 +55,10 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
   }
 
   Future<void> _onEnableSavings(
-      LoadIsEnabled event, Emitter<SavingsState> emit) async {
+      EnableSavings event, Emitter<SavingsState> emit) async {
+    if (state.isActivatingSavings) return;
     try {
+      emit(state.copyWith(isActivatingSavings: false));
       final dEuro = ERC20(
           address: EthereumAddress.fromHex(dEUROAsset.address),
           client: _client);
@@ -68,7 +71,7 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
           credentials: _appStore.wallet.primaryAccount.primaryAddress);
       developer.log('Infinite approval for Savings Contract: $txId',
           name: 'SavingsBloc');
-      emit(state.copyWith(isEnabled: true));
+      emit(state.copyWith(isEnabled: true, isActivatingSavings: false));
     } catch (e) {
       developer.log('Error during loading enabled',
           error: e, name: 'SavingsBloc');

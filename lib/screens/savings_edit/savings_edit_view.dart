@@ -1,8 +1,10 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/screens/savings_edit/bloc/savings_edit_bloc.dart';
+import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/widgets/amount_info_row.dart';
 import 'package:deuro_wallet/widgets/number_pad.dart';
 import 'package:deuro_wallet/widgets/standard_slide_button_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,14 +16,17 @@ class SavingsEditView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
+        appBar: CupertinoNavigationBar(
           backgroundColor: Colors.transparent,
           leading: IconButton(
             onPressed: () => context.pop(),
             icon: Icon(
-              Icons.arrow_back,
+              Icons.arrow_back_ios_new,
+              color: DEuroColors.anthracite,
+              size: 24,
             ),
           ),
+          border: null,
         ),
         body: SafeArea(
           child: BlocBuilder<SavingsEditBloc, SavingsEditState>(
@@ -55,7 +60,9 @@ class SavingsEditView extends StatelessWidget {
                 child: StandardSlideButton(
                   onSlideComplete: () =>
                       context.read<SavingsEditBloc>().add(SendSubmitted()),
-                  buttonText: S.of(context).send,
+                  buttonText: context.read<SavingsEditBloc>().isAdding
+                      ? S.of(context).savings_add
+                      : S.of(context).savings_remove,
                 ),
               )
             ]);

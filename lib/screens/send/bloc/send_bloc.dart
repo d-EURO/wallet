@@ -10,8 +10,10 @@ import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
 import 'package:deuro_wallet/packages/wallet/create_transaction.dart';
 import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
 import 'package:deuro_wallet/packages/wallet/transaction_priority.dart';
+import 'package:deuro_wallet/router.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 part 'send_event.dart';
 part 'send_state.dart';
@@ -91,8 +93,9 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
         final id = await transaction();
         developer.log(id, name: 'SendBloc');
-        // ToDo: Perform Send
         emit(state.copyWith(status: SendStatus.success));
+
+        navigatorKey.currentContext?.pop(); // ToDo: Go to success screen
       } catch (e) {
         developer.log('Error during send!', error: e, name: 'SendBloc');
         emit(state.copyWith(status: SendStatus.failure));

@@ -9,9 +9,10 @@ import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
+import 'package:deuro_wallet/router.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:web3dart/crypto.dart';
+import 'package:go_router/go_router.dart';
 import 'package:web3dart/web3dart.dart';
 
 part 'savings_edit_event.dart';
@@ -94,6 +95,8 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
 
       developer.log(txId, name: 'SavingsEditBloc');
       emit(state.copyWith(status: SendStatus.success));
+
+      navigatorKey.currentContext?.pop(); // ToDo: Go to success screen
     } catch (e) {
       developer.log('Error during send!', error: e, name: 'SavingsEditBloc');
       emit(state.copyWith(status: SendStatus.failure));
@@ -106,9 +109,7 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
     _feeTimer = Timer.periodic(Duration(seconds: 1), (_) async {
       try {
         final gasPrice = await client.getGasPrice();
-        final estimatedGas = await client.estimateGas(
-            data: hexToBytes(
-                '0x753ef93c0000000000000000000000000000000000000000000000008ac7230489e80000000000000000000000000000000000000000004265596f75724f776e42616e6b'));
+        final estimatedGas = await client.estimateGas();
         final fee =
             (gasPrice.getInWei + BigInt.from(priorityFee)) * estimatedGas;
         final feeString = formatFixed(fee, 18, fractionalDigits: 6);
