@@ -72,5 +72,5 @@ class QRAddressWidget extends StatelessWidget {
       );
 
   Future<void> _copyToClipboard() =>
-      Clipboard.setData(ClipboardData(text: uri));
+      Clipboard.setData(ClipboardData(text: subtitle));
 }
