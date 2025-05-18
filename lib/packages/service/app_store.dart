@@ -8,7 +8,7 @@ import 'package:web3dart/web3dart.dart' as web3;
 
 class AppStore {
   List<Node> _nodes = [];
-  final _client = Client();
+  final httpClient = Client();
   Wallet? _wallet;
 
   set wallet(Wallet wallet_) => _wallet = wallet_;
@@ -39,6 +39,8 @@ class AppStore {
       },
     );
 
-    return web3.Web3Client(node.httpsUrl, _client);
+    return web3.Web3Client(node.httpsUrl, httpClient);
   }
+
+  String? dfxAuthToken;
 }

@@ -16,6 +16,7 @@ import 'package:deuro_wallet/screens/settings_edit_node/settings_edit_node_page.
 import 'package:deuro_wallet/screens/settings_languages/settings_languages_page.dart';
 import 'package:deuro_wallet/screens/settings_nodes/settings_nodes_page.dart';
 import 'package:deuro_wallet/screens/settings_seed/settings_seed_page.dart';
+import 'package:deuro_wallet/screens/web_view/web_view_page.dart';
 import 'package:deuro_wallet/screens/welcome/welcome_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -89,6 +90,10 @@ void setupRouter() {
         ],
         builder: (context, state) => SavingsPage(),
       ),
+      GoRoute(
+          path: '/webView',
+          builder: (context, state) =>
+              WebViewPage(state.extra as WebViewRouteParams)),
     ],
   ));
 }

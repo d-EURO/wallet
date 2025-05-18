@@ -44,7 +44,7 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
   Timer? _feeTimer;
 
   void _onChainChanged(ChainChanged event, Emitter<SendInvoiceState> emit) {
-    emit(state.copyWith(blockchain: event.blockchain));
+    emit(state.copyWith(asset: _getAsset(event.blockchain)));
     _startFeeSync();
   }
 
@@ -62,27 +62,26 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
       SendSubmitted event, Emitter<SendInvoiceState> emit) async {
     emit(state.copyWith(status: SendStatus.inProgress));
     try {
-      final asset = _getAsset(state.blockchain);
       final gasPrice =
           state.invoice.methods[state.blockchain.name]!.first.gasFee;
 
       final uri = await _openCryptoPayService.getOpenCryptoPayAddress(
-          state.invoice, asset);
+          state.invoice, state.asset);
 
       final transaction = await prepareERC20Transaction(
-        _appStore.getClient(state.blockchain.chainId),
+        _appStore.getClient(state.asset.chainId),
         currentAccount: _appStore.wallet.currentAccount.primaryAddress,
         receiveAddress: uri.address,
         amount: parseFixed(uri.amount, 18),
-        contractAddress: asset.address,
-        chainId: state.blockchain.chainId,
+        contractAddress: state.asset.address,
+        chainId: state.asset.chainId,
         gasPrice: gasPrice,
       );
 
       final id = await _openCryptoPayService.commitOpenCryptoPayRequest(
           '0x$transaction',
           request: state.invoice,
-          asset: asset);
+          asset: state.asset);
       developer.log(id, name: 'SendInvoiceBloc');
       emit(state.copyWith(status: SendStatus.success));
     } catch (e) {
@@ -93,7 +92,7 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
 
   void _startFeeSync() {
     final priorityFee = 0;
-    final client = _appStore.getClient(state.blockchain.chainId);
+    final client = _appStore.getClient(state.asset.chainId);
     _feeTimer?.cancel();
     _feeTimer = Timer.periodic(Duration(seconds: 1), (_) async {
       try {

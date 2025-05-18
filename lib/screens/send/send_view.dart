@@ -1,5 +1,4 @@
 import 'package:deuro_wallet/generated/i18n.dart';
-import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
 import 'package:deuro_wallet/screens/send/bloc/send_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';

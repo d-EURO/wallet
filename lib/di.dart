@@ -7,6 +7,7 @@ import 'package:deuro_wallet/packages/repository/transaction_repository.dart';
 import 'package:deuro_wallet/packages/repository/wallet_repository.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/service/balance_service.dart';
+import 'package:deuro_wallet/packages/service/dfx/dfx_service.dart';
 import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
 import 'package:deuro_wallet/packages/service/wallet_service.dart';
 import 'package:deuro_wallet/packages/storage/database.dart';
@@ -16,7 +17,6 @@ import 'package:deuro_wallet/screens/restore_wallet/bloc/restore_wallet_cubit.da
 import 'package:deuro_wallet/screens/savings/bloc/savings_bloc.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/setup.dart';
-import 'package:deuro_wallet/styles/language.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,6 +62,8 @@ void setupServices() {
       getIt<AssetRepository>(), getIt<TransactionRepository>()));
 
   getIt.registerFactory(() => OpenCryptoPayService());
+  getIt.registerFactory(() => DFXService(getIt<AppStore>(),
+      getIt<SettingsRepository>(), getIt<AssetRepository>()));
 }
 
 void setupBlocs() {
@@ -72,8 +74,7 @@ void setupBlocs() {
     getIt<AppStore>(),
   ));
 
-  getIt.registerSingleton(
-      SettingsBloc(getIt<SettingsRepository>()));
+  getIt.registerSingleton(SettingsBloc(getIt<SettingsRepository>()));
 
   getIt.registerFactory(() => RestoreWalletCubit(getIt<WalletService>()));
 

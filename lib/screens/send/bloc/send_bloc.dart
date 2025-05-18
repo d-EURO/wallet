@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
+import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
 import 'package:deuro_wallet/packages/wallet/create_transaction.dart';
@@ -16,9 +17,9 @@ part 'send_event.dart';
 part 'send_state.dart';
 
 class SendBloc extends Bloc<SendEvent, SendState> {
-  SendBloc(this._appStore, this._asset,
-      {String receiver = '', String amount = '0'})
-      : super(SendState(receiver: receiver, amount: amount)) {
+  SendBloc(this._appStore,
+      {required Asset asset, String receiver = '', String amount = '0'})
+      : super(SendState(asset: asset, receiver: receiver, amount: amount)) {
     on<ReceiverChanged>(_onReceiverChanged);
     on<AmountChangedAdd>(_onAmountAdd);
     on<AmountChangedDecimal>(_onAmountDecimal);
@@ -37,7 +38,6 @@ class SendBloc extends Bloc<SendEvent, SendState> {
   }
 
   final AppStore _appStore;
-  final Asset _asset;
 
   Timer? _feeTimer;
 
@@ -66,7 +66,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
   }
 
   void _onChainChanged(ChainChanged event, Emitter<SendState> emit) {
-    emit(state.copyWith(blockchain: event.blockchain));
+    emit(state.copyWith(asset: _getAsset(event.blockchain)));
     _startFeeSync();
   }
 
@@ -83,8 +83,8 @@ class SendBloc extends Bloc<SendEvent, SendState> {
           _appStore.getClient(state.blockchain.chainId),
           currentAccount: _appStore.wallet.currentAccount.primaryAddress,
           receiveAddress: state.receiver,
-          amount: parseFixed(state.amount, _asset.decimals),
-          contractAddress: _asset.address,
+          amount: parseFixed(state.amount, state.asset.decimals),
+          contractAddress: state.asset.address,
           chainId: state.blockchain.chainId,
           priority: TransactionPriority.slow,
         );
@@ -116,5 +116,20 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         add(FeeChanged(feeString));
       } on StateError catch (_) {}
     });
+  }
+
+  Asset _getAsset(Blockchain blockchain) {
+    switch (blockchain) {
+      case Blockchain.ethereum:
+        return dEUROAsset;
+      case Blockchain.polygon:
+        return dEUROPolygonAsset;
+      case Blockchain.arbitrum:
+        return dEUROArbitrumAsset;
+      case Blockchain.base:
+        return dEUROBaseAsset;
+      case Blockchain.optimism:
+        return dEUROOptimismAsset;
+    }
   }
 }

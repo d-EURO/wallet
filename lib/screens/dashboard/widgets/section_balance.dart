@@ -4,6 +4,7 @@ import 'package:deuro_wallet/di.dart';
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/packages/open_crypto_pay/exceptions.dart';
 import 'package:deuro_wallet/packages/open_crypto_pay/open_crypto_pay_service.dart';
+import 'package:deuro_wallet/packages/service/dfx/dfx_service.dart';
 import 'package:deuro_wallet/packages/wallet/payment_uri.dart';
 import 'package:deuro_wallet/screens/send/send_page.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
@@ -43,14 +44,14 @@ class SectionBalance extends StatelessWidget {
                       child: ActionButton(
                         icon: Icons.credit_card,
                         label: S.of(context).deposit,
-                        onPressed: () {},
+                        onPressed: () => getIt<DFXService>().launchProvider(context, true),
                         buttonStyle: kBalanceBarActionButtonStyle,
                       ),
                     ),
                     ActionButton(
                       icon: Icons.account_balance,
                       label: S.of(context).withdraw,
-                      onPressed: () {},
+                      onPressed: () => getIt<DFXService>().launchProvider(context, false),
                       buttonStyle: kBalanceBarActionButtonStyle,
                     ),
                     Spacer(),

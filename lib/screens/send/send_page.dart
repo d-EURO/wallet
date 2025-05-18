@@ -1,4 +1,5 @@
 import 'package:deuro_wallet/di.dart';
+import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/screens/send/bloc/send_bloc.dart';
@@ -9,8 +10,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SendRouteParams {
   final String receiver;
   final String amount;
+  final Asset asset;
 
-  const SendRouteParams({this.receiver = "", this.amount = "0"});
+  const SendRouteParams(
+      {this.asset = dEUROAsset, this.receiver = "", this.amount = "0"});
 }
 
 class SendPage extends StatelessWidget {
@@ -20,8 +23,10 @@ class SendPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-        create: (_) => SendBloc(getIt<AppStore>(), dEUROAsset,
-            receiver: params.receiver, amount: params.amount.isNotEmpty ? params.amount : "0"),
+        create: (_) => SendBloc(getIt<AppStore>(),
+            asset: params.asset,
+            receiver: params.receiver,
+            amount: params.amount.isNotEmpty ? params.amount : "0"),
         child: SendView(receiver: params.receiver),
       );
 }

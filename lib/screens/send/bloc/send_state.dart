@@ -5,26 +5,28 @@ enum SendStatus { initial, inProgress, success, failure }
 class SendState extends Equatable {
   const SendState({
     this.status = SendStatus.initial,
+    this.asset = dEUROAsset,
     this.receiver = "",
     this.amount = "0",
     this.isValid = false,
-    this.blockchain = Blockchain.ethereum,
     this.fee = "0.0"
   });
 
   final SendStatus status;
+  final Asset asset;
   final String receiver;
   final String amount;
   final bool isValid;
-  final Blockchain blockchain;
   final String fee;
 
+  Blockchain get blockchain => Blockchain.getFromChainId(asset.chainId);
+  
   SendState copyWith({
     SendStatus? status,
     String? receiver,
     String? amount,
     bool? isValid,
-    Blockchain? blockchain,
+    Asset? asset,
     String? fee,
   }) {
     return SendState(
@@ -32,11 +34,11 @@ class SendState extends Equatable {
       receiver: receiver ?? this.receiver,
       amount: amount ?? this.amount,
       isValid: isValid ?? this.isValid,
-      blockchain: blockchain ?? this.blockchain,
+      asset: asset ?? this.asset,
       fee: fee ?? this.fee,
     );
   }
 
   @override
-  List<Object> get props => [status, receiver, amount, blockchain, fee];
+  List<Object> get props => [status, receiver, amount, asset, fee];
 }
