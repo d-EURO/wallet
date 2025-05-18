@@ -144,8 +144,8 @@ class SectionBalance extends StatelessWidget {
     QRData? result = await presentQRScanner(
       context,
       (code, _) =>
-          RegExp(r'(\b0x[a-fA-F0-9]{40}\b)').hasMatch(code!) ||
-          OpenCryptoPayService.isOpenCryptoPayQR(code),
+          RegExp(r'(\b0x[a-fA-F0-9]{40}\b)').hasMatch(code ?? '') ||
+          OpenCryptoPayService.isOpenCryptoPayQR(code ?? ''),
     );
 
     if (result?.value == null) return;

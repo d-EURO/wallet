@@ -18,7 +18,7 @@ class QRData {
 
   QRData.fromBarcode(Barcode barcode)
       : value = barcode.rawValue,
-        data = barcode.rawBytes!;
+        data = barcode.rawBytes ?? Uint8List(0);
 }
 
 bool _defaultQRValidate(String? code, List<int>? rawBytes) =>
@@ -76,7 +76,7 @@ class _QRScannerState extends State<QRScanner> {
 
   void _handleBarcodeInternal(BarcodeCapture barcodes) {
     for (final barcode in barcodes.barcodes) {
-      developer.log(barcode.rawBytes.toString(), name: "QRScanner._handleBarcodeInternal", level: 800);
+      developer.log("${barcode.rawValue} - ${barcode.rawBytes}", name: "QRScanner._handleBarcodeInternal", level: 800);
       if (!widget.validateQR(barcode.rawValue, barcode.rawBytes)) continue;
       if (mounted && !popped) {
         setState(() => popped = true);
