@@ -14,7 +14,9 @@ class SavingsView extends StatelessWidget {
             builder: (context, state) => Column(children: [
               SectionBalance(
                 balance: BigInt.parse(state.amount, radix: 16),
-                collectedInterest: BigInt.parse(state.interest, radix: 16),
+                interestRate: BigInt.parse(state.interestRate, radix: 16),
+                collectedInterest:
+                    BigInt.parse(state.accruedInterest, radix: 16),
                 isEnabled: state.isEnabled,
               ),
             ]),

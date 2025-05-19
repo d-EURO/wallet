@@ -106,12 +106,14 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
 
   Future<void> _onLoadSavingsBalance(
       LoadSavingsBalance event, Emitter<SavingsState> emit) async {
+    final interestRate = await _savingsGateway.currentRatePPM();
     final amount = await _savingsGateway
         .savings(($param19: EthereumAddress.fromHex(_appStore.primaryAddress)));
     final intrest = await _savingsGateway.accruedInterest(
         (accountOwner: EthereumAddress.fromHex(_appStore.primaryAddress)));
     emit(state.copyWith(
         amount: amount.saved.toRadixString(16),
-        interest: intrest.toRadixString(16)));
+        interestRate: interestRate.toRadixString(16),
+        accruedInterest: intrest.toRadixString(16)));
   }
 }

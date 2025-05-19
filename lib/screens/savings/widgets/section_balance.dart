@@ -1,7 +1,9 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
+import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/screens/savings/bloc/savings_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/styles/icons.dart';
 import 'package:deuro_wallet/styles/styles.dart';
 import 'package:deuro_wallet/widgets/action_button.dart';
 import 'package:deuro_wallet/widgets/chain_asset_icon.dart';
@@ -12,12 +14,14 @@ import 'package:go_router/go_router.dart';
 
 class SectionBalance extends StatelessWidget {
   final BigInt balance;
+  final BigInt interestRate;
   final BigInt collectedInterest;
   final bool isEnabled;
 
   const SectionBalance({
     super.key,
     required this.balance,
+    required this.interestRate,
     required this.collectedInterest,
     required this.isEnabled,
   });
@@ -62,7 +66,7 @@ class SectionBalance extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      S.of(context).savings_balance,
+                      "${S.of(context).savings_balance} | ${formatFixed(interestRate, 4, fractionalDigits: 2)}% APR",
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.white.withAlpha(153),
@@ -121,49 +125,51 @@ class SectionBalance extends StatelessWidget {
                 ),
                 width: double.infinity,
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        S.of(context).interest_to_be_collected,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white.withAlpha(153),
-                          fontWeight: FontWeight.w500,
-                        ),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      S.of(context).interest_to_be_collected,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withAlpha(153),
+                        fontWeight: FontWeight.w500,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 12),
-                              child: ChainAssetIcon(asset: dEUROAsset),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 12),
+                            child: ChainAssetIcon(asset: dEUROAsset),
+                          ),
+                          HideAmountText(
+                            amount: collectedInterest,
+                            leadingSymbol: "",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontFamily: "Satoshi Bold",
                             ),
-                            HideAmountText(
-                              amount: collectedInterest,
-                              leadingSymbol: "",
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                                fontFamily: "Satoshi Bold",
-                              ),
-                            ),
-                            Spacer(),
-                            ActionButton(
-                              icon: Icons.circle_outlined,
-                              label: S.of(context).collect_interest,
-                              onPressed: () => context
-                                  .read<SavingsBloc>()
-                                  .add(CollectInterest()),
-                              buttonStyle: kBalanceBarActionButtonStyle,
-                            ),
-                          ],
-                        ),
+                          ),
+                          Spacer(),
+                          ActionButton(
+                            customIcon:
+                                CollectInterestIcon(color: Colors.white),
+                            label: S.of(context).collect_interest,
+                            onPressed: () => context
+                                .read<SavingsBloc>()
+                                .add(CollectInterest()),
+                            buttonStyle: kBalanceBarActionButtonStyle,
+                          ),
+                        ],
                       ),
-                    ]),
+                    ),
+                  ],
+                ),
               )
             ],
           ),

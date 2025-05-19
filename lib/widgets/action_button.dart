@@ -8,6 +8,7 @@ class ActionButton extends StatelessWidget {
     super.key,
     required this.label,
     this.icon,
+    this.customIcon,
     this.onPressed,
     this.isLoading = false,
     this.textStyle = kActionButtonTextStyle,
@@ -15,6 +16,7 @@ class ActionButton extends StatelessWidget {
   });
 
   final IconData? icon;
+  final Widget? customIcon;
   final bool isLoading;
   final String label;
   final VoidCallback? onPressed;
@@ -27,7 +29,7 @@ class ActionButton extends StatelessWidget {
         child: FilledButton.icon(
           style: buttonStyle ?? kFullwidthActionButtonStyle,
           onPressed: isLoading ? null : onPressed,
-          icon: icon != null ? Icon(icon) : null,
+          icon: icon != null ? Icon(icon) : customIcon,
           label: isLoading
               ? CupertinoActivityIndicator(color: DEuroColors.dEuroGold)
               : Text(label, textAlign: TextAlign.center, style: textStyle),

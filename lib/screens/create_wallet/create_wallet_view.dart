@@ -3,7 +3,7 @@ import 'package:deuro_wallet/screens/create_wallet/bloc/create_wallet_cubit.dart
 import 'package:deuro_wallet/screens/home/bloc/home_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/styles/styles.dart';
-import 'package:deuro_wallet/widgets/icons.dart';
+import 'package:deuro_wallet/styles/icons.dart';
 import 'package:deuro_wallet/widgets/seed_blur_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
