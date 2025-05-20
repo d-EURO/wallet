@@ -9,18 +9,20 @@ class SendState extends Equatable {
     this.receiver = "",
     this.amount = "0",
     this.isValid = false,
-    this.fee = "0.0"
+    this.fee = "0.0",
+    this.alias,
   });
 
   final SendStatus status;
   final Asset asset;
   final String receiver;
+  final AliasRecord? alias;
   final String amount;
   final bool isValid;
   final String fee;
 
   Blockchain get blockchain => Blockchain.getFromChainId(asset.chainId);
-  
+
   SendState copyWith({
     SendStatus? status,
     String? receiver,
@@ -28,17 +30,30 @@ class SendState extends Equatable {
     bool? isValid,
     Asset? asset,
     String? fee,
-  }) {
-    return SendState(
-      status: status ?? this.status,
-      receiver: receiver ?? this.receiver,
-      amount: amount ?? this.amount,
-      isValid: isValid ?? this.isValid,
-      asset: asset ?? this.asset,
-      fee: fee ?? this.fee,
-    );
-  }
+    AliasRecord? alias,
+  }) =>
+      SendState(
+        status: status ?? this.status,
+        receiver: receiver ?? this.receiver,
+        amount: amount ?? this.amount,
+        isValid: isValid ?? this.isValid,
+        asset: asset ?? this.asset,
+        fee: fee ?? this.fee,
+        alias: alias ?? this.alias,
+      );
+
+  SendState copyAlias({
+    AliasRecord? alias,
+  }) =>
+      SendState(
+          status: status,
+          receiver: receiver,
+          amount: amount,
+          isValid: isValid,
+          asset: asset,
+          fee: fee,
+          alias: alias);
 
   @override
-  List<Object> get props => [status, receiver, amount, asset, fee];
+  List<Object?> get props => [status, receiver, amount, asset, fee, alias];
 }

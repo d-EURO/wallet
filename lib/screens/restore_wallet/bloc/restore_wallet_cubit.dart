@@ -52,7 +52,7 @@ class RestoreWalletCubit extends Cubit<RestoreWalletState> {
         context,
         (String? code, List<int>? rawBytes) =>
             rawBytes?.isNotEmpty == true && isSeedQr(code ?? "") ||
-            isCompactSeedQr(rawBytes!),
+            isCompactSeedQr(rawBytes ?? []),
       );
 
       String? seed;

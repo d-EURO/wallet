@@ -32,8 +32,9 @@ class _StandardSlideButtonState extends State<StandardSlideButton> {
         return Container(
           height: widget.height,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: DEuroColors.dEuroBlue),
+            borderRadius: BorderRadius.circular(40),
+            color: DEuroColors.neutralGrey93,
+          ),
           child: Stack(
             alignment: Alignment.centerLeft,
             children: [
@@ -42,7 +43,7 @@ class _StandardSlideButtonState extends State<StandardSlideButton> {
                   widget.buttonText,
                   style: kPageTitleTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: DEuroColors.dEuroBlue,
                   ),
                 ),
               ),
@@ -69,12 +70,14 @@ class _StandardSlideButtonState extends State<StandardSlideButton> {
                     width: sliderWidth,
                     height: widget.height - 8,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: DEuroColors.dEuroGold,
+                      borderRadius: BorderRadius.circular(40),
+                      color: DEuroColors.dEuroBlue,
                     ),
                     alignment: Alignment.center,
-                    child:
-                        Icon(Icons.arrow_forward, color: DEuroColors.dEuroBlue),
+                    child: const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               )

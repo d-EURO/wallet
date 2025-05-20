@@ -33,6 +33,10 @@ final class ReceiverChanged extends SendEvent {
   List<Object> get props => [receiver];
 }
 
+final class SelectAlias extends SendEvent {
+  const SelectAlias();
+}
+
 final class FeeChanged extends SendEvent {
   const FeeChanged(this.fee);
 

@@ -6,12 +6,20 @@ const kPrimaryButtonTextStyle = TextStyle(fontSize: 16, color: Colors.white);
 const kPageTitleTextStyle =
     TextStyle(fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Satoshi');
 
+const kTitleTextStyle = TextStyle(fontSize: 16, color: DEuroColors.anthracite);
+
 const kSubtitleTextStyle = TextStyle(fontSize: 14, color: DEuroColors.neutralGrey);
 
 const kActionButtonTextStyle = TextStyle(fontSize: 12, color: Colors.white);
 
 final kFullwidthPrimaryButtonStyle = ElevatedButton.styleFrom(
   backgroundColor: Colors.white.withAlpha(50),
+  fixedSize: Size(double.infinity, 55),
+  elevation: 0.0,
+);
+
+final kFullwidthGrayButtonStyle = ElevatedButton.styleFrom(
+  backgroundColor: DEuroColors.neutralGrey,
   fixedSize: Size(double.infinity, 55),
   elevation: 0.0,
 );

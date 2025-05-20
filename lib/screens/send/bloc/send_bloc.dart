@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
+import 'package:deuro_wallet/packages/service/alias_resolver/alias_resolver.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
@@ -11,7 +12,9 @@ import 'package:deuro_wallet/packages/wallet/create_transaction.dart';
 import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
 import 'package:deuro_wallet/packages/wallet/transaction_priority.dart';
 import 'package:deuro_wallet/router.dart';
+import 'package:deuro_wallet/screens/transaction_sent/transaction_sent_page.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,6 +25,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
   SendBloc(this._appStore,
       {required Asset asset, String receiver = '', String amount = '0'})
       : super(SendState(asset: asset, receiver: receiver, amount: amount)) {
+    on<SelectAlias>(_onSelectAlias);
     on<ReceiverChanged>(_onReceiverChanged);
     on<AmountChangedAdd>(_onAmountAdd);
     on<AmountChangedDecimal>(_onAmountDecimal);
@@ -43,8 +47,25 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
   Timer? _feeTimer;
 
-  void _onReceiverChanged(ReceiverChanged event, Emitter<SendState> emit) {
+  Future<void> _onReceiverChanged(
+      ReceiverChanged event, Emitter<SendState> emit) async {
     emit(state.copyWith(receiver: event.receiver));
+    if (event.receiver.contains(".")) {
+      final resolvedAlias = await AliasResolver.resolve(
+        _appStore.getClient(1),
+        alias: event.receiver,
+        ticker: state.asset.symbol,
+        tickerFallback: "ETH",
+      );
+      emit(state.copyAlias(alias: resolvedAlias));
+    } else {
+      emit(state.copyAlias());
+    }
+  }
+
+  Future<void> _onSelectAlias(
+      SelectAlias event, Emitter<SendState> emit) async {
+    emit(state.copyWith(receiver: state.alias?.address));
   }
 
   void _onAmountAdd(AmountChangedAdd event, Emitter<SendState> emit) {
@@ -95,7 +116,12 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         developer.log(id, name: 'SendBloc');
         emit(state.copyWith(status: SendStatus.success));
 
-        navigatorKey.currentContext?.pop(); // ToDo: Go to success screen
+        if (navigatorKey.currentContext != null) {
+          navigatorKey.currentContext?.pop();
+          showCupertinoSheet(
+              context: navigatorKey.currentContext!,
+              pageBuilder: (_) => TransactionSentPage(transactionId: id));
+        }
       } catch (e) {
         developer.log('Error during send!', error: e, name: 'SendBloc');
         emit(state.copyWith(status: SendStatus.failure));

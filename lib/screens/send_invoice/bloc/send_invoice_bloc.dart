@@ -10,9 +10,13 @@ import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
 import 'package:deuro_wallet/packages/wallet/create_transaction.dart';
+import 'package:deuro_wallet/router.dart';
 import 'package:deuro_wallet/screens/send_invoice/bloc/expiry_cubit.dart';
+import 'package:deuro_wallet/screens/transaction_sent/transaction_sent_page.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 part 'send_invoice_event.dart';
 part 'send_invoice_state.dart';
@@ -84,6 +88,13 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
           asset: state.asset);
       developer.log(id, name: 'SendInvoiceBloc');
       emit(state.copyWith(status: SendStatus.success));
+
+      if (navigatorKey.currentContext != null) {
+        navigatorKey.currentContext?.pop();
+        showCupertinoSheet(
+            context: navigatorKey.currentContext!,
+            pageBuilder: (_) => TransactionSentPage(transactionId: id));
+      }
     } catch (e) {
       developer.log('Error during send!', error: e, name: 'SendInvoiceBloc');
       emit(state.copyWith(status: SendStatus.failure));
