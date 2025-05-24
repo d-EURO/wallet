@@ -13,7 +13,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 Future<void> main() async {
-  await setup();
+  final databaseKey = await setupEssentials();
+  await finishSetup(databaseKey);
 
   runApp(const DEuroWallet());
 }

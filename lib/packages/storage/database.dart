@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ffi';
 import 'dart:io';
 
@@ -18,6 +19,25 @@ part 'database.g.dart';
 const _encryptionPassword = 'drift.example.unsafe_password';
 const _databaseFileName = 'test.db.enc';
 
+Future<bool> tryOpeningDatabase(String encryptionPassword) async {
+  final database = AppDatabase(encryptionPassword);
+  try {
+    await database.allNodes;
+    await database.close();
+    return true;
+  } on SqliteException catch (e) {
+    log("SqliteException", error: e, name: 'AppDatabase tryOpeningDatabase');
+    if (e.resultCode == 26) {
+      log("Wrong Pin", error: e, name: 'AppDatabase tryOpeningDatabase');
+    }
+  } catch (e) {
+    log("Unexpected Error", error: e, name: 'AppDatabase tryOpeningDatabase');
+  } finally {
+    await database.close();
+  }
+  return false;
+}
+
 @DriftDatabase(tables: [
   Assets,
   Balances,
@@ -27,7 +47,8 @@ const _databaseFileName = 'test.db.enc';
   WalletInfos,
 ])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openDatabase());
+  AppDatabase(String encryptionPassword)
+      : super(_openDatabase(encryptionPassword));
 
   @override
   int get schemaVersion => 1;
@@ -36,14 +57,19 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
         beforeOpen: (details) async {},
       );
+
+  static Future<String> getDatabasePath() async {
+    final path = await getApplicationDocumentsDirectory();
+    return p.join(path.path, _databaseFileName);
+  }
 }
 
-QueryExecutor _openDatabase() {
+QueryExecutor _openDatabase(String encryptionPassword) {
   return LazyDatabase(() async {
-    final path = await getApplicationDocumentsDirectory();
+    final path = await AppDatabase.getDatabasePath();
 
     return NativeDatabase.createInBackground(
-      File(p.join(path.path, _databaseFileName)),
+      File(path),
       isolateSetup: () async {
         open
           ..overrideFor(OperatingSystem.android, openCipherOnAndroid)
@@ -66,9 +92,8 @@ QueryExecutor _openDatabase() {
         // Then, apply the key to encrypt the database. Unfortunately, this
         // pragma doesn't seem to support prepared statements so we inline the
         // key.
-        final escapedKey = _encryptionPassword.replaceAll("'", "''");
+        final escapedKey = encryptionPassword.replaceAll("'", "''");
         db.execute("pragma key = '$escapedKey'");
-
         // Test that the key is correct by selecting from a table
         db.execute('select count(*) from sqlite_master');
       },
