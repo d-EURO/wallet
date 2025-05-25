@@ -24,20 +24,20 @@ class SavingsState extends Equatable {
     bool? isEnabled,
     bool? isActivatingSavings,
     bool? isCollectingInterest,
-  }) {
-    return SavingsState(
-      amount: amount ?? this.amount,
-      interestRate: interestRate ?? this.interestRate,
-      accruedInterest: accruedInterest ?? this.accruedInterest,
-      isEnabled: isEnabled ?? this.isEnabled,
-      isActivatingSavings: isActivatingSavings ?? this.isActivatingSavings,
-      isCollectingInterest: isCollectingInterest ?? this.isCollectingInterest,
-    );
-  }
+  }) =>
+      SavingsState(
+        amount: amount ?? this.amount,
+        interestRate: interestRate ?? this.interestRate,
+        accruedInterest: accruedInterest ?? this.accruedInterest,
+        isEnabled: isEnabled ?? this.isEnabled,
+        isActivatingSavings: isActivatingSavings ?? this.isActivatingSavings,
+        isCollectingInterest: isCollectingInterest ?? this.isCollectingInterest,
+      );
 
   @override
   List<Object> get props => [
         amount,
+        interestRate,
         accruedInterest,
         isEnabled,
         isActivatingSavings,
