@@ -4,9 +4,11 @@ import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TransactionHistoryCubit extends Cubit<List<Transaction>> {
-  TransactionHistoryCubit(this._repository) : super([]) {
-    _repository.watchTransactionsOfAssets([dEUROAsset], 6).listen(emit);
+  TransactionHistoryCubit(this._repository, this._walletAddress) : super([]) {
+    _repository.watchTransactionsOfAssets(
+        [dEUROAsset], _walletAddress, 6).listen(emit);
   }
 
+  final String _walletAddress;
   final TransactionRepository _repository;
 }
