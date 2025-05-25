@@ -118,7 +118,7 @@ class RestoreWalletView extends StatelessWidget {
                                 ? CupertinoActivityIndicator(
                                     color: DEuroColors.dEuroGold,
                                   )
-                                : Text(S.of(context).create_wallet,
+                                : Text(S.of(context).restore_wallet,
                                     textAlign: TextAlign.center,
                                     style: kFullwidthBlueButtonTextStyle),
                           ),

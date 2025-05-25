@@ -2,6 +2,7 @@ import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -41,10 +42,11 @@ class WelcomePage extends StatelessWidget {
                         padding: const EdgeInsets.only(
                             top: 20, bottom: 5, right: 20, left: 20),
                         child: InkWell(
-                          // ToDo
-                          // onTap: () => launchUrl(
-                          //     Uri.parse("https://docs.frankencoin.app/en/tou.html"),
-                          //     mode: LaunchMode.externalApplication),
+                          onTap: () => launchUrl(
+                            Uri.parse(
+                                "https://docs.frankencoin.app/en/tou.html"),
+                            mode: LaunchMode.externalApplication,
+                          ),
                           enableFeedback: false,
                           child: Text.rich(
                             TextSpan(

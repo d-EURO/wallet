@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/service/balance_service.dart';
 import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
@@ -31,14 +33,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.copyWith(isLoadingWallet: false));
       return;
     }
-    final wallet = await _walletService.getCurrentWallet();
-    _appStore.wallet = wallet;
+    try {
+      final wallet = await _walletService.getCurrentWallet();
+      _appStore.wallet = wallet;
+
+      emit(state.copyWith(openWallet: wallet, isLoadingWallet: false));
+    } catch (e) {
+      developer.log('Something went wrong during wallet loading', error: e);
+      emit(state.copyWith(isLoadingWallet: false));
+
+      return;
+    }
+
     _balanceService.updateERC20Balances(_appStore.primaryAddress);
     _balanceService.startSync(_appStore.primaryAddress);
     _transactionHistoryService.explorerAssistedScan();
-
-    emit(state.copyWith(openWallet: wallet, isLoadingWallet: false));
   }
+
   Future<void> _onDeleteCurrentWallet(
       DeleteCurrentWalletEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoadingWallet: true));

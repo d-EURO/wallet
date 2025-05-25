@@ -41,10 +41,11 @@ Future<String> setupEssentials() async {
 
   if (encryptionKey == null) {
     if (await _existsDatabaseFile()) {
-      return 'drift.example.unsafe_password';
+      throw Exception("Database found, but key is missing!");
     }
     final freshEncryptionKey = SecureStorage.getNewEncryptionKey();
     await secureStorage.setEncryptionKey(freshEncryptionKey);
+    await getIt<SettingsRepository>().removeCurrentWalletId();
 
     return freshEncryptionKey;
   }

@@ -90,11 +90,12 @@ class TransactionRepository {
       .watchTransactions()
       .transform<List<Transaction>>(_transformer);
 
-  Stream<List<Transaction>> watchTransactionsOfAssets(Iterable<Asset> assets,
+  Stream<List<Transaction>> watchTransactionsOfAssets(
+      Iterable<Asset> assets, String wallet,
       [int? limit]) {
     if (limit != null) {
       return _appDatabase
-          .watchTransfersOfAssetsLimit(assets.map((e) => e.id), limit)
+          .watchTransfersOfAssetsLimit(assets.map((e) => e.id), wallet, limit)
           .transform<List<Transaction>>(_transformer);
     }
     return _appDatabase

@@ -16,8 +16,7 @@ import 'package:sqlite3/open.dart';
 
 part 'database.g.dart';
 
-const _encryptionPassword = 'drift.example.unsafe_password';
-const _databaseFileName = 'test.db.enc';
+const _databaseFileName = 'wallet.db.enc';
 
 Future<bool> tryOpeningDatabase(String encryptionPassword) async {
   final database = AppDatabase(encryptionPassword);

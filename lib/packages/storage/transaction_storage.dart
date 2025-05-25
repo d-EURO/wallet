@@ -14,7 +14,7 @@ extension TransactionStorage on AppDatabase {
     int type,
     String note,
     String data,
-      DateTime timeStamp,
+    DateTime timeStamp,
   ) =>
       into(transactions).insert(TransactionsCompanion.insert(
         height: height,
@@ -44,8 +44,7 @@ extension TransactionStorage on AppDatabase {
         ]))
       .watch();
 
-  Stream<List<TransactionData>> watchTransfersOfAssets(
-          Iterable<int> assets) =>
+  Stream<List<TransactionData>> watchTransfersOfAssets(Iterable<int> assets) =>
       (select(transactions)
             ..where((row) => row.asset.isIn(assets) & row.type.equals(2))
             ..orderBy([
@@ -54,12 +53,20 @@ extension TransactionStorage on AppDatabase {
           .watch();
 
   Stream<List<TransactionData>> watchTransfersOfAssetsLimit(
-          Iterable<int> assets, int limit) =>
+          Iterable<int> assets, String wallet, int limit) =>
       (select(transactions)
-            ..where((row) => row.asset.isIn(assets) & row.type.equals(2))
+            ..where((row) => Expression.and([
+                  row.asset.isIn(assets),
+                  row.type.equals(2),
+                  Expression.or([
+                    row.senderAddress.equals(wallet),
+                    row.receiverAddress.equals(wallet)
+                  ]),
+                ]))
             ..orderBy([
               (u) => OrderingTerm(expression: u.height, mode: OrderingMode.desc)
-            ])..limit(limit))
+            ])
+            ..limit(limit))
           .watch();
 
   Future<List<TransactionData>> getLatestTransactions({int limit = 1}) =>

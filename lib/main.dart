@@ -13,10 +13,28 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 Future<void> main() async {
-  final databaseKey = await setupEssentials();
-  await finishSetup(databaseKey);
+  try {
+    final databaseKey = await setupEssentials();
+    await finishSetup(databaseKey);
 
-  runApp(const DEuroWallet());
+    runApp(const DEuroWallet());
+  } catch (e) {
+    runApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: true,
+        home: Scaffold(
+          body: Container(
+            margin:
+                const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
+            child: Text(
+              'Error:\n${e.toString()}',
+              style: const TextStyle(fontSize: 22, color: Colors.black),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class DEuroWallet extends StatefulWidget {
