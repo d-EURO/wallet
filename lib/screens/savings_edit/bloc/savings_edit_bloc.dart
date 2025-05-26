@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/constants.dart';
+import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/contracts/contracts.dart';
@@ -9,8 +10,13 @@ import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
+import 'package:deuro_wallet/packages/wallet/transaction_priority.dart';
 import 'package:deuro_wallet/router.dart';
+import 'package:deuro_wallet/screens/transaction_sent/transaction_sent_page.dart';
+import 'package:deuro_wallet/widgets/error_bottom_sheet.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:web3dart/web3dart.dart';
@@ -73,30 +79,70 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
   Future<void> _onSubmitted(
       SendSubmitted event, Emitter<SavingsEditState> emit) async {
     emit(state.copyWith(status: SendStatus.inProgress));
+
+    final currentAccount = _appStore.wallet.primaryAccount.primaryAddress;
+
+    final ethBalance = await client.getBalance(currentAccount.address);
+    if (ethBalance.getInWei < parseFixed(state.fee, 18)) {
+      return showModalBottomSheet(
+          context: navigatorKey.currentContext!,
+          builder: (_) => ErrorBottomSheet(
+              message: S.current.error_not_enough_money(
+                  state.blockchain.nativeSymbol, state.blockchain.name)));
+    }
+
     try {
       final savings = getSavingsGateway(client);
       final amount = parseFixed(state.amount, _asset.decimals);
+      final priority = TransactionPriority.slow;
 
       // final frontendGateway = getFrontendGateway(client);
       // final frontendCode = Uint8List.fromList(sha256.convert(utf8.encode('wallet')).bytes);
       // dev.log(bytesToHex(frontendCode));
       // final txId = await frontendGateway.registerFrontendCode((frontendCode: frontendCode), credentials: _appStore.wallet.primaryAccount.primaryAddress);
 
+      final transaction = Transaction(
+        from: currentAccount.address,
+        to: savings.self.address,
+        maxPriorityFeePerGas: state.blockchain.chainId == 1
+            ? EtherAmount.fromInt(EtherUnit.gwei, priority.tip)
+            : null,
+        value: EtherAmount.zero(),
+      );
+
       final txId = await (isAdding
-          ? savings.save((
-              amount: amount,
-              frontendCode: frontendCode,
-            ), credentials: _appStore.wallet.primaryAccount.primaryAddress)
-          : savings.withdraw$2((
-              amount: amount,
-              frontendCode: frontendCode,
-              target: _appStore.wallet.primaryAccount.primaryAddress.address,
-            ), credentials: _appStore.wallet.primaryAccount.primaryAddress));
+          ? savings.save(
+              (
+                amount: amount,
+                frontendCode: frontendCode,
+              ),
+              transaction: transaction,
+              credentials: currentAccount,
+            )
+          : savings.withdraw$2(
+              (
+                amount: amount,
+                frontendCode: frontendCode,
+                target: currentAccount.address,
+              ),
+              transaction: transaction,
+              credentials: currentAccount,
+            ));
 
       developer.log(txId, name: 'SavingsEditBloc');
       emit(state.copyWith(status: SendStatus.success));
 
-      navigatorKey.currentContext?.pop(); // ToDo: Go to success screen
+      if (navigatorKey.currentContext != null) {
+        navigatorKey.currentContext?.pop();
+        showCupertinoSheet(
+          context: navigatorKey.currentContext!,
+          pageBuilder: (_) => TransactionSentPage(
+            title: S.current.transaction_sent,
+            transactionId: txId,
+            blockchain: state.blockchain,
+          ),
+        );
+      }
     } catch (e) {
       developer.log('Error during send!', error: e, name: 'SavingsEditBloc');
       emit(state.copyWith(status: SendStatus.failure));

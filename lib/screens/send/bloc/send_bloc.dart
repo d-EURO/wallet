@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/service/alias_resolver/alias_resolver.dart';
@@ -13,8 +14,10 @@ import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
 import 'package:deuro_wallet/packages/wallet/transaction_priority.dart';
 import 'package:deuro_wallet/router.dart';
 import 'package:deuro_wallet/screens/transaction_sent/transaction_sent_page.dart';
+import 'package:deuro_wallet/widgets/error_bottom_sheet.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -100,10 +103,21 @@ class SendBloc extends Bloc<SendEvent, SendState> {
   Future<void> _onSubmitted(
       SendSubmitted event, Emitter<SendState> emit) async {
     if (state.receiver.isEthereumAddress) {
+      final client = _appStore.getClient(state.blockchain.chainId);
+      final ethBalance = await client
+          .getBalance(_appStore.wallet.currentAccount.primaryAddress.address);
+      if (ethBalance.getInWei < parseFixed(state.fee, 18)) {
+        return showModalBottomSheet(
+            context: navigatorKey.currentContext!,
+            builder: (_) => ErrorBottomSheet(
+                message: S.current.error_not_enough_money(
+                    state.blockchain.nativeSymbol, state.blockchain.name)));
+      }
+
       emit(state.copyWith(status: SendStatus.inProgress));
       try {
         final transaction = await createERC20Transaction(
-          _appStore.getClient(state.blockchain.chainId),
+          client,
           currentAccount: _appStore.wallet.currentAccount.primaryAddress,
           receiveAddress: state.receiver,
           amount: parseFixed(state.amount, state.asset.decimals),
@@ -119,8 +133,13 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         if (navigatorKey.currentContext != null) {
           navigatorKey.currentContext?.pop();
           showCupertinoSheet(
-              context: navigatorKey.currentContext!,
-              pageBuilder: (_) => TransactionSentPage(transactionId: id));
+            context: navigatorKey.currentContext!,
+            pageBuilder: (_) => TransactionSentPage(
+              title: S.current.transaction_sent,
+              transactionId: id,
+              blockchain: state.blockchain,
+            ),
+          );
         }
       } catch (e) {
         developer.log('Error during send!', error: e, name: 'SendBloc');

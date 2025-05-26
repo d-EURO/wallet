@@ -11,6 +11,7 @@
   "create_wallet_title": "Wallet sichern",
   "deposit": "Einzahlen",
   "done": "Erledigt",
+  "error_not_enough_money": "Du brauchst dafür mehr ${symbol} auf ${blockchain}",
   "expires_in": "Verfällt in",
   "expires_in_seconds": "${seconds} Sekunden",
   "fee": "Gebühr",

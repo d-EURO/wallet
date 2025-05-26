@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/open_crypto_pay/models.dart';
@@ -13,8 +14,10 @@ import 'package:deuro_wallet/packages/wallet/create_transaction.dart';
 import 'package:deuro_wallet/router.dart';
 import 'package:deuro_wallet/screens/send_invoice/bloc/expiry_cubit.dart';
 import 'package:deuro_wallet/screens/transaction_sent/transaction_sent_page.dart';
+import 'package:deuro_wallet/widgets/error_bottom_sheet.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -64,6 +67,16 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
 
   Future<void> _onSubmitted(
       SendSubmitted event, Emitter<SendInvoiceState> emit) async {
+    final client = _appStore.getClient(state.asset.chainId);
+
+    final ethBalance = await client
+        .getBalance(_appStore.wallet.currentAccount.primaryAddress.address);
+    if (ethBalance.getInWei < parseFixed(state.fee, 18)) {
+      return showModalBottomSheet(
+          context: navigatorKey.currentContext!,
+          builder: (_) => ErrorBottomSheet(message: "You need more ETH"));
+    }
+
     emit(state.copyWith(status: SendStatus.inProgress));
     try {
       final gasPrice =
@@ -73,7 +86,7 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
           state.invoice, state.asset);
 
       final transaction = await prepareERC20Transaction(
-        _appStore.getClient(state.asset.chainId),
+        client,
         currentAccount: _appStore.wallet.currentAccount.primaryAddress,
         receiveAddress: uri.address,
         amount: parseFixed(uri.amount, 18),
@@ -92,8 +105,13 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
       if (navigatorKey.currentContext != null) {
         navigatorKey.currentContext?.pop();
         showCupertinoSheet(
-            context: navigatorKey.currentContext!,
-            pageBuilder: (_) => TransactionSentPage(transactionId: id));
+          context: navigatorKey.currentContext!,
+          pageBuilder: (_) => TransactionSentPage(
+            title: S.current.transaction_sent,
+            transactionId: id,
+            blockchain: state.blockchain,
+          ),
+        );
       }
     } catch (e) {
       developer.log('Error during send!', error: e, name: 'SendInvoiceBloc');

@@ -22,6 +22,8 @@ import 'package:deuro_wallet/screens/welcome/welcome_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import 'generated/i18n.dart';
+
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void setupRouter() {
@@ -57,7 +59,10 @@ void setupRouter() {
           GoRoute(
             path: "/success/:txId",
             builder: (context, state) => TransactionSentPage(
-                transactionId: state.pathParameters["txId"]!),
+              title: S.of(context).transaction_sent,
+              transactionId: state.pathParameters["txId"]!,
+              blockchain: Blockchain.ethereum,
+            ),
           ),
         ],
       ),

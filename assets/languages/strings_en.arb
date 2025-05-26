@@ -11,6 +11,7 @@
   "create_wallet_title": "Back up your Wallet",
   "deposit": "Deposit",
   "done": "Done",
+  "error_not_enough_money": "You need more ${symbol} on ${blockchain} for that.",
   "expires_in": "Expires in",
   "expires_in_seconds": "${seconds} Seconds",
   "fee": "Fee",

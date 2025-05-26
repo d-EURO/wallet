@@ -2,11 +2,16 @@ import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/constants.dart';
+import 'package:deuro_wallet/generated/i18n.dart';
+import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/contracts/contracts.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
+import 'package:deuro_wallet/router.dart';
+import 'package:deuro_wallet/widgets/error_bottom_sheet.dart';
 import 'package:equatable/equatable.dart';
 import 'package:erc20/erc20.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -59,6 +64,8 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
   Future<void> _onEnableSavings(
       EnableSavings event, Emitter<SavingsState> emit) async {
     if (state.isActivatingSavings) return;
+    if (!(await _checkRequiredEth())) return;
+
     try {
       emit(state.copyWith(isActivatingSavings: true));
       final dEuro = ERC20(
@@ -83,6 +90,8 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
   Future<void> _onCollectInterest(
       CollectInterest event, Emitter<SavingsState> emit) async {
     if (state.isCollectingInterest) return;
+    if (!(await _checkRequiredEth())) return;
+
     try {
       emit(state.copyWith(isCollectingInterest: true));
       final savingsGateway = getSavingsGateway(_client);
@@ -115,5 +124,20 @@ class SavingsBloc extends Bloc<SavingsEvent, SavingsState> {
         amount: amount.saved.toRadixString(16),
         interestRate: interestRate.toRadixString(16),
         accruedInterest: intrest.toRadixString(16)));
+  }
+
+  Future<bool> _checkRequiredEth() async {
+    final ethBalance = await _client
+        .getBalance(_appStore.wallet.primaryAccount.primaryAddress.address);
+    if (ethBalance.getInWei < BigInt.from(3000)) {
+      final blockchain = Blockchain.ethereum;
+      showModalBottomSheet(
+          context: navigatorKey.currentContext!,
+          builder: (_) => ErrorBottomSheet(
+              message: S.current.error_not_enough_money(
+                  blockchain.nativeSymbol, blockchain.name)));
+      return false;
+    }
+    return true;
   }
 }

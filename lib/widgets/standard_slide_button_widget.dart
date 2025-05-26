@@ -62,9 +62,8 @@ class _StandardSlideButtonState extends State<StandardSlideButton> {
                   onHorizontalDragEnd: (details) {
                     if (_dragPosition >= effectiveMaxWidth - sliderWidth - 10) {
                       widget.onSlideComplete();
-                    } else {
-                      setState(() => _dragPosition = 0);
                     }
+                    setState(() => _dragPosition = 0);
                   },
                   child: Container(
                     width: sliderWidth,
