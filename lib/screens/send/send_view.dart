@@ -1,6 +1,7 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
 import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
+import 'package:deuro_wallet/screens/send/bloc/gas_fee_cubit.dart';
 import 'package:deuro_wallet/screens/send/bloc/send_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/styles/styles.dart';
@@ -49,7 +50,7 @@ class SendView extends StatelessWidget {
                 !previous.receiver.isEthereumAddress &&
                 current.receiver.isEthereumAddress,
             child: BlocBuilder<SendBloc, SendState>(
-              builder: (context, state) => Column(
+              builder: (context, sendState) => Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(
@@ -79,8 +80,8 @@ class SendView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (state.alias != null &&
-                      !state.receiver.isEthereumAddress) ...[
+                  if (sendState.alias != null &&
+                      !sendState.receiver.isEthereumAddress) ...[
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 26, right: 26, top: 10),
@@ -99,11 +100,11 @@ class SendView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  state.alias!.name,
+                                  sendState.alias!.name,
                                   style: kTitleTextStyle,
                                 ),
                                 Text(
-                                  state.alias!.address.asMediumAddress,
+                                  sendState.alias!.address.asMediumAddress,
                                   style: kSubtitleTextStyle,
                                 )
                               ],
@@ -113,13 +114,13 @@ class SendView extends StatelessWidget {
                       ),
                     ),
                   ],
-                  if (state.receiver.isEthereumAddress &&
+                  if (sendState.receiver.isEthereumAddress &&
                       !receiverFocusNode.hasFocus) ...[
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 26, right: 26, top: 10),
                       child: Text(
-                        "${state.amount.toString()} €",
+                        "${sendState.amount.toString()} €",
                         style: const TextStyle(fontSize: 60),
                         textAlign: TextAlign.center,
                       ),
@@ -129,14 +130,17 @@ class SendView extends StatelessWidget {
                       onPressed: (blockchain) => context
                           .read<SendBloc>()
                           .add(ChainChanged(blockchain)),
-                      blockchain: state.blockchain,
+                      blockchain: sendState.blockchain,
                       padding: _kPadding,
                     ),
-                    AmountInfoRow(
-                      padding: _kPadding,
-                      title: S.of(context).fee,
-                      amountString: state.fee,
-                      currencySymbol: state.blockchain.nativeSymbol,
+                    BlocBuilder<GasFeeCubit, GasFeeState>(
+                      bloc: context.read<SendBloc>().gasFeeCubit,
+                      builder: (context, state) => AmountInfoRow(
+                        padding: _kPadding,
+                        title: S.of(context).fee,
+                        amountString: state.formatedFee,
+                        currencySymbol: sendState.blockchain.nativeSymbol,
+                      ),
                     ),
                     NumberPad(
                       onNumberPressed: (index) =>
@@ -148,7 +152,7 @@ class SendView extends StatelessWidget {
                     ),
                     Padding(
                       padding: _kPadding,
-                      child: state.status == SendStatus.inProgress
+                      child: sendState.status == SendStatus.inProgress
                           ? SizedBox(
                               height: 55,
                               child: CupertinoActivityIndicator(

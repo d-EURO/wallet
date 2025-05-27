@@ -9,7 +9,6 @@ class SendState extends Equatable {
     this.receiver = "",
     this.amount = "0",
     this.isValid = false,
-    this.fee = "0.0",
     this.alias,
   });
 
@@ -19,7 +18,6 @@ class SendState extends Equatable {
   final AliasRecord? alias;
   final String amount;
   final bool isValid;
-  final String fee;
 
   Blockchain get blockchain => Blockchain.getFromChainId(asset.chainId);
 
@@ -29,7 +27,6 @@ class SendState extends Equatable {
     String? amount,
     bool? isValid,
     Asset? asset,
-    String? fee,
     AliasRecord? alias,
   }) =>
       SendState(
@@ -38,7 +35,6 @@ class SendState extends Equatable {
         amount: amount ?? this.amount,
         isValid: isValid ?? this.isValid,
         asset: asset ?? this.asset,
-        fee: fee ?? this.fee,
         alias: alias ?? this.alias,
       );
 
@@ -51,9 +47,8 @@ class SendState extends Equatable {
           amount: amount,
           isValid: isValid,
           asset: asset,
-          fee: fee,
           alias: alias);
 
   @override
-  List<Object?> get props => [status, receiver, amount, asset, fee, alias];
+  List<Object?> get props => [status, receiver, amount, asset, alias];
 }

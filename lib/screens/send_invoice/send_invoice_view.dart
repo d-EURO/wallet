@@ -1,5 +1,6 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
+import 'package:deuro_wallet/screens/send/bloc/gas_fee_cubit.dart';
 import 'package:deuro_wallet/screens/send_invoice/bloc/expiry_cubit.dart';
 import 'package:deuro_wallet/screens/send_invoice/bloc/send_invoice_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
@@ -74,11 +75,14 @@ class SendInvoiceView extends StatelessWidget {
                   blockchain: sendState.blockchain,
                   padding: _kPadding,
                 ),
-                AmountInfoRow(
-                  padding: _kPadding,
-                  title: S.of(context).fee,
-                  amountString: sendState.fee,
-                  currencySymbol: sendState.blockchain.nativeSymbol,
+                BlocBuilder<GasFeeCubit, GasFeeState>(
+                  bloc: context.read<SendInvoiceBloc>().gasFeeCubit,
+                  builder: (context, state) => AmountInfoRow(
+                    padding: _kPadding,
+                    title: S.of(context).fee,
+                    amountString: state.formatedFee,
+                    currencySymbol: sendState.blockchain.nativeSymbol,
+                  ),
                 ),
                 BlocBuilder<ExpiryCubit, ExpiryState>(
                     bloc: context.read<SendInvoiceBloc>().expiryCubit,

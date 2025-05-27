@@ -7,12 +7,12 @@ import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/service/alias_resolver/alias_resolver.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
-import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
 import 'package:deuro_wallet/packages/wallet/create_transaction.dart';
 import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
 import 'package:deuro_wallet/packages/wallet/transaction_priority.dart';
 import 'package:deuro_wallet/router.dart';
+import 'package:deuro_wallet/screens/send/bloc/gas_fee_cubit.dart';
 import 'package:deuro_wallet/screens/transaction_sent/transaction_sent_page.dart';
 import 'package:deuro_wallet/widgets/error_bottom_sheet.dart';
 import 'package:equatable/equatable.dart';
@@ -27,28 +27,26 @@ part 'send_state.dart';
 class SendBloc extends Bloc<SendEvent, SendState> {
   SendBloc(this._appStore,
       {required Asset asset, String receiver = '', String amount = '0'})
-      : super(SendState(asset: asset, receiver: receiver, amount: amount)) {
+      : gasFeeCubit =
+            GasFeeCubit(_appStore, Blockchain.getFromChainId(asset.chainId)),
+        super(SendState(asset: asset, receiver: receiver, amount: amount)) {
     on<SelectAlias>(_onSelectAlias);
     on<ReceiverChanged>(_onReceiverChanged);
     on<AmountChangedAdd>(_onAmountAdd);
     on<AmountChangedDecimal>(_onAmountDecimal);
     on<AmountChangedDelete>(_onAmountRemove);
     on<ChainChanged>(_onChainChanged);
-    on<FeeChanged>(_onFeeChanged);
     on<SendSubmitted>(_onSubmitted);
-
-    _startFeeSync();
   }
 
   @override
-  Future<void> close() {
-    _feeTimer?.cancel();
+  Future<void> close() async {
+    await gasFeeCubit.close();
     return super.close();
   }
 
+  final GasFeeCubit gasFeeCubit;
   final AppStore _appStore;
-
-  Timer? _feeTimer;
 
   Future<void> _onReceiverChanged(
       ReceiverChanged event, Emitter<SendState> emit) async {
@@ -93,11 +91,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
   void _onChainChanged(ChainChanged event, Emitter<SendState> emit) {
     emit(state.copyWith(asset: _getAsset(event.blockchain)));
-    _startFeeSync();
-  }
-
-  void _onFeeChanged(FeeChanged event, Emitter<SendState> emit) {
-    emit(state.copyWith(fee: event.fee));
+    gasFeeCubit.blockchain = event.blockchain;
   }
 
   Future<void> _onSubmitted(
@@ -106,12 +100,14 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       final client = _appStore.getClient(state.blockchain.chainId);
       final ethBalance = await client
           .getBalance(_appStore.wallet.currentAccount.primaryAddress.address);
-      if (ethBalance.getInWei < parseFixed(state.fee, 18)) {
+      if (ethBalance.getInWei < gasFeeCubit.state.gasFee) {
         return showModalBottomSheet(
-            context: navigatorKey.currentContext!,
-            builder: (_) => ErrorBottomSheet(
-                message: S.current.error_not_enough_money(
-                    state.blockchain.nativeSymbol, state.blockchain.name)));
+          context: navigatorKey.currentContext!,
+          builder: (_) => ErrorBottomSheet(
+            message: S.current.error_not_enough_money(
+                state.blockchain.nativeSymbol, state.blockchain.name),
+          ),
+        );
       }
 
       emit(state.copyWith(status: SendStatus.inProgress));
@@ -146,24 +142,6 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         emit(state.copyWith(status: SendStatus.failure));
       }
     }
-  }
-
-  void _startFeeSync() {
-    final priorityFee = 0;
-    final client = _appStore.getClient(state.blockchain.chainId);
-    _feeTimer?.cancel();
-    _feeTimer = Timer.periodic(Duration(seconds: 1), (_) async {
-      try {
-        final gasPrice = await client.getGasPrice();
-        final estimatedGas = await client.estimateGas();
-        final fee =
-            (gasPrice.getInWei + BigInt.from(priorityFee)) * estimatedGas;
-        final feeString = fee < BigInt.parse('1000000000000')
-            ? '< 0.000001'
-            : formatFixed(fee, 18, fractionalDigits: 6);
-        add(FeeChanged(feeString));
-      } on StateError catch (_) {}
-    });
   }
 
   Asset _getAsset(Blockchain blockchain) {

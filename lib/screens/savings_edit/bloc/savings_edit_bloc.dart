@@ -8,10 +8,10 @@ import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/contracts/contracts.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
-import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
 import 'package:deuro_wallet/packages/wallet/transaction_priority.dart';
 import 'package:deuro_wallet/router.dart';
+import 'package:deuro_wallet/screens/send/bloc/gas_fee_cubit.dart';
 import 'package:deuro_wallet/screens/transaction_sent/transaction_sent_page.dart';
 import 'package:deuro_wallet/widgets/error_bottom_sheet.dart';
 import 'package:equatable/equatable.dart';
@@ -25,30 +25,28 @@ part 'savings_edit_event.dart';
 part 'savings_edit_state.dart';
 
 class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
-  SavingsEditBloc(this._appStore, this.isAdding) : super(SavingsEditState()) {
+  SavingsEditBloc(this._appStore, this.isAdding)
+      : gasFeeCubit = GasFeeCubit(_appStore),
+        super(SavingsEditState()) {
     on<AmountChangedAdd>(_onAmountAdd);
     on<AmountChangedDecimal>(_onAmountDecimal);
     on<AmountChangedDelete>(_onAmountRemove);
-    on<FeeChanged>(_onFeeChanged);
     on<SendSubmitted>(_onSubmitted);
-
-    _startFeeSync();
   }
 
   @override
-  Future<void> close() {
-    _feeTimer?.cancel();
+  Future<void> close() async {
+    await gasFeeCubit.close();
     return super.close();
   }
 
   final AppStore _appStore;
   final bool isAdding;
+  final GasFeeCubit gasFeeCubit;
 
   Asset get _asset => dEUROAsset;
 
   Web3Client get client => _appStore.getClient(Blockchain.ethereum.chainId);
-
-  Timer? _feeTimer;
 
   void _onAmountAdd(AmountChangedAdd event, Emitter<SavingsEditState> emit) {
     emit(state.copyWith(
@@ -72,10 +70,6 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
     ));
   }
 
-  void _onFeeChanged(FeeChanged event, Emitter<SavingsEditState> emit) {
-    emit(state.copyWith(fee: event.fee));
-  }
-
   Future<void> _onSubmitted(
       SendSubmitted event, Emitter<SavingsEditState> emit) async {
     emit(state.copyWith(status: SendStatus.inProgress));
@@ -83,7 +77,7 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
     final currentAccount = _appStore.wallet.primaryAccount.primaryAddress;
 
     final ethBalance = await client.getBalance(currentAccount.address);
-    if (ethBalance.getInWei < parseFixed(state.fee, 18)) {
+    if (ethBalance.getInWei < gasFeeCubit.state.gasFee) {
       return showModalBottomSheet(
           context: navigatorKey.currentContext!,
           builder: (_) => ErrorBottomSheet(
@@ -147,20 +141,5 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
       developer.log('Error during send!', error: e, name: 'SavingsEditBloc');
       emit(state.copyWith(status: SendStatus.failure));
     }
-  }
-
-  void _startFeeSync() {
-    final priorityFee = 0;
-    _feeTimer?.cancel();
-    _feeTimer = Timer.periodic(Duration(seconds: 1), (_) async {
-      try {
-        final gasPrice = await client.getGasPrice();
-        final estimatedGas = await client.estimateGas();
-        final fee =
-            (gasPrice.getInWei + BigInt.from(priorityFee)) * estimatedGas;
-        final feeString = formatFixed(fee, 18, fractionalDigits: 6);
-        add(FeeChanged(feeString));
-      } on StateError catch (_) {}
-    });
   }
 }

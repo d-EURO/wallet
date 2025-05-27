@@ -7,15 +7,6 @@ sealed class SendInvoiceEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class FeeChanged extends SendInvoiceEvent {
-  const FeeChanged(this.fee);
-
-  final String fee;
-
-  @override
-  List<Object> get props => [fee];
-}
-
 final class ChainChanged extends SendInvoiceEvent {
   const ChainChanged(this.blockchain);
 

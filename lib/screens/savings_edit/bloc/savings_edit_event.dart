@@ -24,15 +24,6 @@ class AmountChangedDelete extends SavingsEditEvent {
   const AmountChangedDelete();
 }
 
-class FeeChanged extends SavingsEditEvent {
-  const FeeChanged(this.fee);
-
-  final String fee;
-
-  @override
-  List<Object> get props => [fee];
-}
-
 class LoadIsEnabled extends SavingsEditEvent {
   const LoadIsEnabled();
 }

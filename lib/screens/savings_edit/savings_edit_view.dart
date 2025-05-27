@@ -1,5 +1,6 @@
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/screens/savings_edit/bloc/savings_edit_bloc.dart';
+import 'package:deuro_wallet/screens/send/bloc/gas_fee_cubit.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/widgets/amount_info_row.dart';
 import 'package:deuro_wallet/widgets/number_pad.dart';
@@ -30,21 +31,24 @@ class SavingsEditView extends StatelessWidget {
         ),
         body: SafeArea(
           child: BlocBuilder<SavingsEditBloc, SavingsEditState>(
-            builder: (context, state) => Column(children: [
+            builder: (context, savingsEditState) => Column(children: [
               Padding(
                 padding: const EdgeInsets.only(left: 26, right: 26, top: 10),
                 child: Text(
-                  "${state.amount.toString()} €",
+                  "${savingsEditState.amount.toString()} €",
                   style: const TextStyle(fontSize: 60),
                   textAlign: TextAlign.center,
                 ),
               ),
               Spacer(),
-              AmountInfoRow(
-                padding: _kPadding,
-                title: S.of(context).fee,
-                amountString: state.fee,
-                currencySymbol: state.blockchain.nativeSymbol,
+              BlocBuilder<GasFeeCubit, GasFeeState>(
+                bloc: context.read<SavingsEditBloc>().gasFeeCubit,
+                builder: (context, state) => AmountInfoRow(
+                  padding: _kPadding,
+                  title: S.of(context).fee,
+                  amountString: state.formatedFee,
+                  currencySymbol: savingsEditState.blockchain.nativeSymbol,
+                ),
               ),
               NumberPad(
                 onNumberPressed: (i) =>

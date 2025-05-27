@@ -37,15 +37,6 @@ final class SelectAlias extends SendEvent {
   const SelectAlias();
 }
 
-final class FeeChanged extends SendEvent {
-  const FeeChanged(this.fee);
-
-  final String fee;
-
-  @override
-  List<Object> get props => [fee];
-}
-
 final class ChainChanged extends SendEvent {
   const ChainChanged(this.blockchain);
 
