@@ -7,6 +7,7 @@ import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/open_crypto_pay/models.dart';
 import 'package:deuro_wallet/packages/open_crypto_pay/open_crypto_pay_service.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
+import 'package:deuro_wallet/packages/service/balance_service.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/packages/utils/format_fixed.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
@@ -25,7 +26,8 @@ part 'send_invoice_event.dart';
 part 'send_invoice_state.dart';
 
 class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
-  SendInvoiceBloc(this._appStore, this._openCryptoPayService,
+  SendInvoiceBloc(
+      this._appStore, this._openCryptoPayService, this._balanceService,
       {required OpenCryptoPayRequest invoice})
       : expiryCubit = ExpiryCubit(invoice.expiration),
         super(SendInvoiceState(invoice: invoice)) {
@@ -34,6 +36,7 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
     on<CancelInvoice>(_onCancelInvoice);
     on<SendSubmitted>(_onSubmitted);
 
+    _selectPreferredBlockchain();
     _startFeeSync();
   }
 
@@ -47,6 +50,7 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
 
   final AppStore _appStore;
   final OpenCryptoPayService _openCryptoPayService;
+  final BalanceService _balanceService;
 
   Timer? _feeTimer;
 
@@ -116,6 +120,25 @@ class SendInvoiceBloc extends Bloc<SendInvoiceEvent, SendInvoiceState> {
     } catch (e) {
       developer.log('Error during send!', error: e, name: 'SendInvoiceBloc');
       emit(state.copyWith(status: SendStatus.failure));
+    }
+  }
+
+  Future<void> _selectPreferredBlockchain() async {
+    for (final blockchain in [
+      Blockchain.base,
+      Blockchain.arbitrum,
+      Blockchain.optimism,
+      Blockchain.polygon,
+      Blockchain.ethereum
+    ]) {
+      final asset = _getAsset(blockchain);
+      final balance =
+          await _balanceService.getBalance(asset, _appStore.primaryAddress);
+      if (balance == null) continue;
+      if (balance.balance > state.dEuroAmount) {
+        add(ChainChanged(blockchain));
+        break;
+      }
     }
   }
 

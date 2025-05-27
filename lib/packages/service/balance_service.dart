@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/balance.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/repository/asset_repository.dart';
@@ -48,6 +49,9 @@ class BalanceService {
 
     return _updateNativeBalances(address);
   }
+
+  Future<Balance?> getBalance(Asset asset, String address) =>
+      _balanceRepository.getBalance(asset.chainId, asset.address, address);
 
   Future<void> _updateNativeBalances(String address) async {
     for (final chain in Blockchain.values) {
