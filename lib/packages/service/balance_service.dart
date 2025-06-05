@@ -44,6 +44,7 @@ class BalanceService {
         contractAddress: erc20Token.address,
         walletAddress: address,
         balance: balance,
+        asset: erc20Token,
       ));
     }
 
@@ -51,7 +52,7 @@ class BalanceService {
   }
 
   Future<Balance?> getBalance(Asset asset, String address) =>
-      _balanceRepository.getBalance(asset.chainId, asset.address, address);
+      _balanceRepository.getBalance(asset, address);
 
   Future<void> _updateNativeBalances(String address) async {
     for (final chain in Blockchain.values) {
@@ -63,6 +64,7 @@ class BalanceService {
         contractAddress: chain.nativeAsset.address,
         walletAddress: address,
         balance: balance.getInWei,
+        asset: chain.nativeAsset,
       ));
     }
   }

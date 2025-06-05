@@ -49,3 +49,7 @@ final class ChainChanged extends SendEvent {
 final class SendSubmitted extends SendEvent {
   const SendSubmitted();
 }
+
+final class LoadBalances extends SendEvent {
+  const LoadBalances();
+}

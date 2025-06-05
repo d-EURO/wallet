@@ -8,6 +8,7 @@ class CashHoldingBox extends StatelessWidget {
   final Asset asset;
   final BigInt balance;
   final Color backgroundColor;
+  final Color? borderColor;
   final Color firstRowTextColor;
   final Color secondRowTextColor;
   final bool showBlockchainIcon;
@@ -22,6 +23,7 @@ class CashHoldingBox extends StatelessWidget {
     this.secondRowTextColor = DEuroColors.titanGray60,
     this.showBlockchainIcon = false,
     this.navigateToDetails = true,
+    this.borderColor,
   });
 
   TextStyle get _firstRowTextStyle => TextStyle(
@@ -36,6 +38,7 @@ class CashHoldingBox extends StatelessWidget {
           margin: const EdgeInsets.only(top: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
+            border: borderColor != null ? Border.all(color: borderColor!, width: 3) : null,
             color: backgroundColor,
           ),
           padding: const EdgeInsets.all(12),

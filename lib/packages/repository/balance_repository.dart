@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/balance.dart';
 import 'package:deuro_wallet/packages/storage/balance_storage.dart';
 import 'package:deuro_wallet/packages/storage/database.dart';
@@ -24,20 +25,21 @@ class BalanceRepository {
   Future<void> updateBalance(Balance balance) =>
       _appDatabase.updateBalance(balance.id, balance.balance.toRadixString(16));
 
-  Future<Balance?> getBalance(
-          int chainId, String contractAddress, String walletAddress) =>
-      _appDatabase.getBalance(chainId, contractAddress, walletAddress).then(
-          (balance) => balance != null
-              ? Balance(
-                  chainId: balance.chainId,
-                  contractAddress: balance.contractAddress,
-                  walletAddress: balance.walletAddress,
-                  balance: BigInt.parse(balance.balance, radix: 16))
-              : null);
+  Future<Balance?> getBalance(Asset asset, String walletAddress) => _appDatabase
+      .getBalance(asset.chainId, asset.address, walletAddress)
+      .then((balance) => balance != null
+          ? Balance(
+              chainId: balance.chainId,
+              contractAddress: balance.contractAddress,
+              walletAddress: balance.walletAddress,
+              balance: BigInt.parse(balance.balance, radix: 16),
+              asset: asset,
+            )
+          : null);
 
-  Future<bool> exitsBalance(Balance balance) => getBalance(
-          balance.chainId, balance.contractAddress, balance.walletAddress)
-      .then((balance) => balance != null);
+  Future<bool> exitsBalance(Balance balance) =>
+      getBalance(balance.asset, balance.walletAddress)
+          .then((balance) => balance != null);
 
   Stream<Balance> watchBalance(Balance balance) {
     final transformer = StreamTransformer<BalanceData?, Balance>.fromHandlers(
@@ -48,6 +50,7 @@ class BalanceRepository {
           contractAddress: balanceData.contractAddress,
           walletAddress: balanceData.walletAddress,
           balance: BigInt.parse(balanceData.balance, radix: 16),
+          asset: balance.asset,
         ));
       }
     });

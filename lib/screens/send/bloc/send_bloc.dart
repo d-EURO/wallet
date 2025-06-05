@@ -3,9 +3,11 @@ import 'dart:developer' as developer;
 
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/models/asset.dart';
+import 'package:deuro_wallet/models/balance.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/service/alias_resolver/alias_resolver.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
+import 'package:deuro_wallet/packages/service/balance_service.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:deuro_wallet/packages/utils/parse_fixed.dart';
 import 'package:deuro_wallet/packages/wallet/create_transaction.dart';
@@ -25,7 +27,7 @@ part 'send_event.dart';
 part 'send_state.dart';
 
 class SendBloc extends Bloc<SendEvent, SendState> {
-  SendBloc(this._appStore,
+  SendBloc(this._appStore, this._balanceService,
       {required Asset asset, String receiver = '', String amount = '0'})
       : gasFeeCubit =
             GasFeeCubit(_appStore, Blockchain.getFromChainId(asset.chainId)),
@@ -37,6 +39,9 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     on<AmountChangedDelete>(_onAmountRemove);
     on<ChainChanged>(_onChainChanged);
     on<SendSubmitted>(_onSubmitted);
+    on<LoadBalances>(_onLoadBalances);
+
+    add(LoadBalances());
   }
 
   @override
@@ -47,6 +52,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
   final GasFeeCubit gasFeeCubit;
   final AppStore _appStore;
+  final BalanceService _balanceService;
 
   Future<void> _onReceiverChanged(
       ReceiverChanged event, Emitter<SendState> emit) async {
@@ -142,6 +148,25 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         emit(state.copyWith(status: SendStatus.failure));
       }
     }
+  }
+
+  Future<void> _onLoadBalances(LoadBalances event, Emitter<SendState> emit) async {
+    final balances = <Balance>[];
+    final owner = _appStore.wallet.currentAccount.primaryAddress.address.hexEip55;
+    for (final asset in [
+      dEUROAsset,
+      dEUROPolygonAsset,
+      dEUROArbitrumAsset,
+      dEUROBaseAsset,
+      dEUROOptimismAsset
+    ]) {
+      final balance = await _balanceService.getBalance(asset, owner);
+      if (balance != null && balance.balance > BigInt.zero) {
+        balances.add(balance);
+      }
+    }
+
+    emit(state.copyWith(balances: balances));
   }
 
   Asset _getAsset(Blockchain blockchain) {

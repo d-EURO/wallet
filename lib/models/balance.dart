@@ -1,3 +1,4 @@
+import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/packages/utils/fast_hash.dart';
 
 class Balance {
@@ -7,12 +8,14 @@ class Balance {
   final String contractAddress;
   final String walletAddress;
   BigInt balance;
+  final Asset asset;
 
   Balance({
     required this.chainId,
     required this.contractAddress,
     required this.walletAddress,
     required this.balance,
+    required this.asset,
   });
 
   @override

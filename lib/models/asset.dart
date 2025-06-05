@@ -26,5 +26,6 @@ class Asset {
         contractAddress: address,
         walletAddress: wallet,
         balance: BigInt.zero,
+        asset: this,
       );
 }

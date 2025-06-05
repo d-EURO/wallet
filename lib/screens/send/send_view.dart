@@ -1,4 +1,5 @@
 import 'package:deuro_wallet/generated/i18n.dart';
+import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
 import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
 import 'package:deuro_wallet/screens/send/bloc/gas_fee_cubit.dart';
@@ -6,7 +7,7 @@ import 'package:deuro_wallet/screens/send/bloc/send_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/styles/styles.dart';
 import 'package:deuro_wallet/widgets/amount_info_row.dart';
-import 'package:deuro_wallet/widgets/blockchain_selector.dart';
+import 'package:deuro_wallet/widgets/asset_selector.dart';
 import 'package:deuro_wallet/widgets/number_pad.dart';
 import 'package:deuro_wallet/widgets/standard_slide_button_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -126,11 +127,13 @@ class SendView extends StatelessWidget {
                       ),
                     ),
                     Spacer(),
-                    BlockchainSelector(
-                      onPressed: (blockchain) => context
-                          .read<SendBloc>()
-                          .add(ChainChanged(blockchain)),
-                      blockchain: sendState.blockchain,
+                    AssetSelector(
+                      onPressed: (asset) => context.read<SendBloc>().add(
+                          ChainChanged(
+                              Blockchain.getFromChainId(asset.chainId))),
+                      selectedBalance: sendState.balances.firstWhere(
+                          (e) => e.chainId == sendState.blockchain.chainId),
+                      availableBalances: sendState.balances,
                       padding: _kPadding,
                     ),
                     BlocBuilder<GasFeeCubit, GasFeeState>(
