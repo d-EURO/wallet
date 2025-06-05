@@ -1,5 +1,4 @@
 import 'package:deuro_wallet/generated/i18n.dart';
-import 'package:deuro_wallet/models/blockchain.dart';
 import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
 import 'package:deuro_wallet/packages/wallet/is_evm_address.dart';
 import 'package:deuro_wallet/screens/send/bloc/gas_fee_cubit.dart';
@@ -128,9 +127,8 @@ class SendView extends StatelessWidget {
                     ),
                     Spacer(),
                     AssetSelector(
-                      onPressed: (asset) => context.read<SendBloc>().add(
-                          ChainChanged(
-                              Blockchain.getFromChainId(asset.chainId))),
+                      onPressed: (asset) =>
+                          context.read<SendBloc>().add(AssetChanged(asset)),
                       selectedBalance: sendState.balances.firstWhere(
                           (e) => e.chainId == sendState.blockchain.chainId),
                       availableBalances: sendState.balances,
@@ -175,12 +173,4 @@ class SendView extends StatelessWidget {
           ),
         ),
       );
-
-  Future<void> _onPastePressed() async {
-    final value = await Clipboard.getData('text/plain');
-    if (value?.text != null) {
-      receiverController.text = value!.text!;
-    }
-    receiverFocusNode.unfocus();
-  }
 }

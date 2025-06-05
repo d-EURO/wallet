@@ -1,4 +1,5 @@
 {
+  "available": "Available",
   "balance": "Balance",
   "blockchain": "Blockchain",
   "collect_interest": "Collect",
@@ -17,6 +18,7 @@
   "expires_in_seconds": "${seconds} Seconds",
   "fee": "Fee",
   "from": "from",
+  "from_clipboard": "From Clipboard",
   "import_wallet": "Import",
   "interest_to_be_collected": "Interest to be collected",
   "language_english": "English",
@@ -43,6 +45,7 @@
   "scan_qr_code": "Scan QR",
   "seed": "Seed",
   "select_network": "Select network",
+  "select_token": "Select Token",
   "send": "Send",
   "settings": "Settings",
   "settings_dangerzone": "Dangerzone",

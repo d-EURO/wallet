@@ -20,6 +20,7 @@ import 'package:deuro_wallet/widgets/error_bottom_sheet.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,14 +35,16 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         super(SendState(asset: asset, receiver: receiver, amount: amount)) {
     on<SelectAlias>(_onSelectAlias);
     on<ReceiverChanged>(_onReceiverChanged);
+    on<PasteReceiver>(_onPasteReceiver);
     on<AmountChangedAdd>(_onAmountAdd);
     on<AmountChangedDecimal>(_onAmountDecimal);
     on<AmountChangedDelete>(_onAmountRemove);
-    on<ChainChanged>(_onChainChanged);
+    on<AssetChanged>(_onAssetChanged);
     on<SendSubmitted>(_onSubmitted);
     on<LoadBalances>(_onLoadBalances);
 
     add(LoadBalances());
+    add(PasteReceiver());
   }
 
   @override
@@ -70,6 +73,22 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     }
   }
 
+  Future<void> _onPasteReceiver(
+      PasteReceiver event, Emitter<SendState> emit) async {
+    if (await Clipboard.hasStrings()) {
+      final value = await Clipboard.getData('text/plain');
+      if (value?.text?.isEthereumAddress == true) {
+        emit(state.copyAlias(
+          alias: AliasRecord(
+            address: value!.text!,
+            name: S.current.from_clipboard,
+            description: "",
+          ),
+        ));
+      }
+    }
+  }
+
   Future<void> _onSelectAlias(
       SelectAlias event, Emitter<SendState> emit) async {
     emit(state.copyWith(receiver: state.alias?.address));
@@ -95,9 +114,9 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     ));
   }
 
-  void _onChainChanged(ChainChanged event, Emitter<SendState> emit) {
-    emit(state.copyWith(asset: _getAsset(event.blockchain)));
-    gasFeeCubit.blockchain = event.blockchain;
+  void _onAssetChanged(AssetChanged event, Emitter<SendState> emit) {
+    emit(state.copyWith(asset: event.asset));
+    gasFeeCubit.blockchain = Blockchain.getFromChainId(state.asset.chainId);
   }
 
   Future<void> _onSubmitted(
@@ -150,9 +169,11 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     }
   }
 
-  Future<void> _onLoadBalances(LoadBalances event, Emitter<SendState> emit) async {
+  Future<void> _onLoadBalances(
+      LoadBalances event, Emitter<SendState> emit) async {
     final balances = <Balance>[];
-    final owner = _appStore.wallet.currentAccount.primaryAddress.address.hexEip55;
+    final owner =
+        _appStore.wallet.currentAccount.primaryAddress.address.hexEip55;
     for (final asset in [
       dEUROAsset,
       dEUROPolygonAsset,
@@ -167,20 +188,5 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     }
 
     emit(state.copyWith(balances: balances));
-  }
-
-  Asset _getAsset(Blockchain blockchain) {
-    switch (blockchain) {
-      case Blockchain.ethereum:
-        return dEUROAsset;
-      case Blockchain.polygon:
-        return dEUROPolygonAsset;
-      case Blockchain.arbitrum:
-        return dEUROArbitrumAsset;
-      case Blockchain.base:
-        return dEUROBaseAsset;
-      case Blockchain.optimism:
-        return dEUROOptimismAsset;
-    }
   }
 }

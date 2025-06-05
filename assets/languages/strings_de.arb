@@ -1,4 +1,5 @@
 {
+  "available": "Verfügbar",
   "balance": "Guthaben",
   "blockchain": "Blockchain",
   "collect_interest": "Auszahlen",
@@ -17,6 +18,7 @@
   "expires_in_seconds": "${seconds} Sekunden",
   "fee": "Gebühr",
   "from": "von",
+  "from_clipboard": "Vom Clipboard",
   "import_wallet": "Importieren",
   "interest_to_be_collected": "Zu vereinnahmende Zinsen",
   "language_english": "Englisch",
@@ -42,6 +44,7 @@
   "scan_qr_code": "QR scannen",
   "seed": "Seed",
   "select_network": "Netzwerk auswählen",
+  "select_token": "Token auswählen",
   "send": "Senden",
   "settings": "Einstellungen",
   "settings_dangerzone": "Gefahrenzone",

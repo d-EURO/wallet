@@ -37,13 +37,17 @@ final class SelectAlias extends SendEvent {
   const SelectAlias();
 }
 
-final class ChainChanged extends SendEvent {
-  const ChainChanged(this.blockchain);
+final class PasteReceiver extends SendEvent {
+  const PasteReceiver();
+}
 
-  final Blockchain blockchain;
+final class AssetChanged extends SendEvent {
+  const AssetChanged(this.asset);
+
+  final Asset asset;
 
   @override
-  List<Object> get props => [blockchain];
+  List<Object> get props => [asset];
 }
 
 final class SendSubmitted extends SendEvent {
