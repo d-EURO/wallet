@@ -17,10 +17,8 @@ import 'package:deuro_wallet/screens/home/bloc/home_bloc.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
 import 'package:deuro_wallet/styles/styles.dart';
-import 'package:deuro_wallet/widgets/action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class DashboardPage extends StatelessWidget {
   DashboardPage(this._appStore, {super.key}) {
@@ -151,18 +149,18 @@ class DashboardPage extends StatelessWidget {
                                               //         DEuroColors.neutralGrey,
                                               //   ),
                                               // ),
-                                              ActionButton(
-                                                icon: Icons.savings,
-                                                label: "Savings",
-                                                onPressed: () =>
-                                                    context.push('/savings'),
-                                                textStyle:
-                                                    kActionButtonTextStyle
-                                                        .copyWith(
-                                                  color:
-                                                      DEuroColors.neutralGrey,
-                                                ),
-                                              ),
+                                              // ActionButton(
+                                              //   icon: Icons.savings,
+                                              //   label: "Savings",
+                                              //   onPressed: () =>
+                                              //       context.push('/savings'),
+                                              //   textStyle:
+                                              //       kActionButtonTextStyle
+                                              //           .copyWith(
+                                              //     color:
+                                              //         DEuroColors.neutralGrey,
+                                              //   ),
+                                              // ),
                                             ],
                                           ),
                                           ...singleCashHoldings.map(

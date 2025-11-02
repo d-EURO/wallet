@@ -10,6 +10,7 @@ import 'package:deuro_wallet/screens/receive/receive_page.dart';
 import 'package:deuro_wallet/screens/send/send_page.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
 import 'package:deuro_wallet/styles/colors.dart';
+import 'package:deuro_wallet/styles/icons.dart';
 import 'package:deuro_wallet/styles/styles.dart';
 import 'package:deuro_wallet/widgets/action_button.dart';
 import 'package:deuro_wallet/widgets/hide_amount_text.dart';
@@ -133,17 +134,33 @@ class SectionBalance extends StatelessWidget {
                     label: S.of(context).receive,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 15, right: 15),
+                    padding: EdgeInsets.only(left: 20),
+                    child: VerticalIconButton(
+                      onPressed: () => context.push("/send"),
+                      icon: const Icon(Icons.arrow_upward, color: Colors.white),
+                      label: S.of(context).send,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20, right: 20),
                     child: VerticalIconButton.extended(
                       onPressed: () => _presentQRReader(context),
                       icon: const Icon(Icons.qr_code, color: Colors.white),
                       label: S.of(context).pay_scan,
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: VerticalIconButton(
+                      onPressed: () => context.push('/savings'),
+                      icon: const SavingsIcon(color: Colors.white),
+                      label: S.of(context).savings,
+                    ),
+                  ),
                   VerticalIconButton(
-                    onPressed: () => context.push("/send"),
-                    icon: const Icon(Icons.arrow_upward, color: Colors.white),
-                    label: S.of(context).send,
+                    onPressed: () => context.push("/invest"),
+                    icon: const GrowthIcon(color: Colors.white),
+                    label: S.of(context).invest,
                   ),
                 ],
               ),

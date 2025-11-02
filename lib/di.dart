@@ -5,12 +5,14 @@ import 'package:deuro_wallet/packages/repository/asset_repository.dart';
 import 'package:deuro_wallet/packages/repository/balance_repository.dart';
 import 'package:deuro_wallet/packages/repository/cache_repository.dart';
 import 'package:deuro_wallet/packages/repository/node_repository.dart';
+import 'package:deuro_wallet/packages/repository/price_repository.dart';
 import 'package:deuro_wallet/packages/repository/settings_repository.dart';
 import 'package:deuro_wallet/packages/repository/transaction_repository.dart';
 import 'package:deuro_wallet/packages/repository/wallet_repository.dart';
 import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/packages/service/balance_service.dart';
 import 'package:deuro_wallet/packages/service/dfx/dfx_service.dart';
+import 'package:deuro_wallet/packages/service/equity_service.dart';
 import 'package:deuro_wallet/packages/service/transaction_history_service.dart';
 import 'package:deuro_wallet/packages/service/wallet_service.dart';
 import 'package:deuro_wallet/packages/storage/database.dart';
@@ -70,6 +72,7 @@ Future<void> finishSetup(String encryptionKey) async {
 
 void setupRepositories() {
   getIt.registerFactory(() => CacheRepository(getIt<AppDatabase>()));
+  getIt.registerFactory(() => PriceRepository(getIt<AppDatabase>()));
   getIt.registerFactory(() => WalletRepository(getIt<AppDatabase>()));
   getIt.registerFactory(() => BalanceRepository(getIt<AppDatabase>()));
   getIt.registerFactory(() => AssetRepository(getIt<AppDatabase>()));
@@ -88,6 +91,8 @@ void setupServices() {
   getIt.registerFactory(() => TransactionHistoryService(getIt<AppStore>(),
       getIt<AssetRepository>(), getIt<TransactionRepository>()));
 
+  getIt.registerFactory(() => EquityService(getIt<AppStore>()));
+
   getIt.registerFactory(() => OpenCryptoPayService());
   getIt.registerFactory(() => DFXService(getIt<AppStore>(),
       getIt<SettingsRepository>(), getIt<AssetRepository>()));
@@ -104,7 +109,8 @@ void setupBlocs() {
 
   getIt.registerFactory(() => RestoreWalletCubit(getIt<WalletService>()));
 
-  getIt.registerFactory(() => SavingsBloc(getIt<AppStore>(), getIt<CacheRepository>()));
+  getIt.registerFactory(
+      () => SavingsBloc(getIt<AppStore>(), getIt<CacheRepository>()));
 
   getIt.registerFactory(
       () => SwapBloc(getIt<AppStore>(), getIt<BalanceService>()));

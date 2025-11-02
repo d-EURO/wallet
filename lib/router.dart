@@ -5,6 +5,7 @@ import 'package:deuro_wallet/packages/service/app_store.dart';
 import 'package:deuro_wallet/screens/create_wallet/create_wallet_page.dart';
 import 'package:deuro_wallet/screens/dashboard/dashboard_page.dart';
 import 'package:deuro_wallet/screens/home/home.dart';
+import 'package:deuro_wallet/screens/invest/invest_page.dart';
 import 'package:deuro_wallet/screens/receive/receive_page.dart';
 import 'package:deuro_wallet/screens/restore_wallet/restore_wallet_page.dart';
 import 'package:deuro_wallet/screens/savings/savings_page.dart';
@@ -16,6 +17,7 @@ import 'package:deuro_wallet/screens/settings_edit_node/settings_edit_node_page.
 import 'package:deuro_wallet/screens/settings_languages/settings_languages_page.dart';
 import 'package:deuro_wallet/screens/settings_nodes/settings_nodes_page.dart';
 import 'package:deuro_wallet/screens/settings_seed/settings_seed_page.dart';
+import 'package:deuro_wallet/screens/swap/swap_page.dart';
 import 'package:deuro_wallet/screens/transaction_sent/transaction_sent_page.dart';
 import 'package:deuro_wallet/screens/web_view/web_view_page.dart';
 import 'package:deuro_wallet/screens/welcome/welcome_page.dart';
@@ -90,6 +92,14 @@ void setupRouter() {
           ),
         ],
         builder: (context, state) => SettingsPage(),
+      ),
+      GoRoute(
+        path: "/swap",
+        builder: (context, state) => SwapPage(),
+      ),
+      GoRoute(
+        path: "/invest",
+        builder: (context, state) => InvestPage(),
       ),
       GoRoute(
         path: "/savings",

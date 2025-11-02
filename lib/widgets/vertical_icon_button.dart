@@ -4,12 +4,14 @@ class VerticalIconButton extends StatelessWidget {
   final void Function()? onPressed;
   final Widget icon;
   final String label;
+  final Color textColor;
 
   const VerticalIconButton({
     super.key,
     this.onPressed,
     required this.icon,
     required this.label,
+    this.textColor = Colors.white,
   });
 
   static Widget extended({
@@ -31,13 +33,13 @@ class VerticalIconButton extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 5),
               child: CircleAvatar(
-                backgroundColor: Colors.white.withAlpha(50),
+                backgroundColor: textColor.withAlpha(50),
                 child: icon,
               ),
             ),
             Text(
               label,
-              style: const TextStyle(color: Colors.white, fontSize: 10),
+              style: TextStyle(color: textColor, fontSize: 10),
             )
           ],
         ),

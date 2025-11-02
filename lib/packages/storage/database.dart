@@ -6,6 +6,7 @@ import 'package:deuro_wallet/packages/storage/asset_storage.dart';
 import 'package:deuro_wallet/packages/storage/balance_storage.dart';
 import 'package:deuro_wallet/packages/storage/key_value_cache.dart';
 import 'package:deuro_wallet/packages/storage/node_storage.dart';
+import 'package:deuro_wallet/packages/storage/price_storage.dart';
 import 'package:deuro_wallet/packages/storage/transaction_storage.dart';
 import 'package:deuro_wallet/packages/storage/wallet_storage.dart';
 import 'package:drift/drift.dart';
@@ -43,6 +44,7 @@ Future<bool> tryOpeningDatabase(String encryptionPassword) async {
   Balances,
   KeyValueCache,
   Nodes,
+  Prices,
   Transactions,
   WalletAccountInfos,
   WalletInfos,
@@ -52,7 +54,7 @@ class AppDatabase extends _$AppDatabase {
       : super(_openDatabase(encryptionPassword));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -62,6 +64,9 @@ class AppDatabase extends _$AppDatabase {
         onUpgrade: (Migrator m, int from, int to) async {
           if (from < 2) {
             await m.createTable(keyValueCache);
+          }
+          if (from < 3) {
+            await m.createTable(prices);
           }
         },
       );

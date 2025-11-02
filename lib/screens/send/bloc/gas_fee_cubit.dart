@@ -40,6 +40,7 @@ class GasFeeCubit extends Cubit<GasFeeState> {
       final estimatedGas = await client.estimateGas();
       final fee = (gasPrice.getInWei + BigInt.from(priorityFee)) * estimatedGas;
       if (fee != state.gasFee) emit(GasFeeState(fee));
-    } on StateError catch (_) {}
+    } on StateError catch (_) {
+    } on FormatException catch (_) {}
   }
 }

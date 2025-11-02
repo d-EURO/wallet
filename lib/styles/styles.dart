@@ -19,6 +19,13 @@ final kFullwidthPrimaryButtonStyle = ElevatedButton.styleFrom(
   elevation: 0.0,
 );
 
+final kFullwidthPrimaryButtonInvertedStyle = ElevatedButton.styleFrom(
+  backgroundColor: Colors.transparent,
+  fixedSize: Size(double.infinity, 55),
+  elevation: 0.0,
+  side: BorderSide(color: Colors.white.withAlpha(50)),
+);
+
 final kFullwidthGrayButtonStyle = ElevatedButton.styleFrom(
   backgroundColor: DEuroColors.neutralGrey,
   fixedSize: Size(double.infinity, 55),

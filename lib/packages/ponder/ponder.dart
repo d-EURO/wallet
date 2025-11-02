@@ -1,8 +1,10 @@
+import 'package:deuro_wallet/models/price_point.dart';
 import 'package:deuro_wallet/models/transaction.dart';
 import 'package:deuro_wallet/packages/contracts/contracts.dart';
 import 'package:deuro_wallet/packages/ponder/models/ponder_tx.dart';
 import 'package:deuro_wallet/packages/ponder/models/savings_saved.dart';
 import 'package:deuro_wallet/packages/ponder/models/savings_withdrawn.dart';
+import 'package:deuro_wallet/packages/ponder/models/trade_chart_entry.dart';
 import 'package:deuro_wallet/packages/utils/default_assets.dart';
 import 'package:graphql/client.dart';
 
@@ -13,6 +15,37 @@ class Ponder {
       'https://ponder.deuro.com',
     ),
   );
+
+  Future<List<PricePoint>> getTradeChart() async {
+    final QueryOptions options = QueryOptions(
+      document: gql(
+        '''
+        query TradeChart {
+				  tradeCharts(orderDirection: "desc", orderBy: "time", limit: 1000) {
+            items {
+              id
+              lastPrice
+              time
+            }
+				  }
+			  }
+        ''',
+      ),
+      parserFn: (data) => TradeChartEntry.fromJson(data),
+    );
+
+    final result = await client.query(options);
+
+    final pricePoints = <PricePoint>[];
+    for (final item in result.parsedData as List<TradeChartEntry>) {
+      pricePoints.add(PricePoint(
+        asset: nDEPSAsset,
+        price: BigInt.parse(item.lastPrice),
+        time: DateTime.fromMillisecondsSinceEpoch(int.parse(item.time) * 1000),
+      ));
+    }
+    return pricePoints;
+  }
 
   Future<List<Transaction>> getSavingsSavedTransactions(String address) async {
     final QueryOptions options = QueryOptions(
