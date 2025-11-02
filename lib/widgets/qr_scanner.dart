@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/widgets/handlebars.dart';
-import 'package:fast_scanner/fast_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -100,27 +100,6 @@ class _QRScannerState extends State<QRScanner> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [Handlebars.horizontal(context)],
             ),
-            // SafeArea(
-            //   child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.end,
-            //     children: [
-            //       Padding(
-            //         padding: const EdgeInsets.only(right: 10),
-            //         child: IconButton(
-            //           style:
-            //               IconButton.styleFrom(backgroundColor: Colors.black26),
-            //           padding: const EdgeInsets.all(10),
-            //           icon: const Icon(
-            //             Icons.close,
-            //             size: 25,
-            //             color: Colors.white,
-            //           ),
-            //           onPressed: context.pop,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
