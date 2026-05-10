@@ -158,7 +158,7 @@ class SectionBalance extends StatelessWidget {
                     ),
                   ),
                   VerticalIconButton(
-                    onPressed: () => context.push("/invest"),
+                    onPressed: null, //() => context.push("/invest"),
                     icon: const GrowthIcon(color: Colors.white),
                     label: S.of(context).invest,
                   ),

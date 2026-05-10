@@ -17,7 +17,6 @@ import 'package:deuro_wallet/screens/settings_edit_node/settings_edit_node_page.
 import 'package:deuro_wallet/screens/settings_languages/settings_languages_page.dart';
 import 'package:deuro_wallet/screens/settings_nodes/settings_nodes_page.dart';
 import 'package:deuro_wallet/screens/settings_seed/settings_seed_page.dart';
-import 'package:deuro_wallet/screens/swap/swap_page.dart';
 import 'package:deuro_wallet/screens/transaction_sent/transaction_sent_page.dart';
 import 'package:deuro_wallet/screens/web_view/web_view_page.dart';
 import 'package:deuro_wallet/screens/welcome/welcome_page.dart';
@@ -92,10 +91,6 @@ void setupRouter() {
           ),
         ],
         builder: (context, state) => SettingsPage(),
-      ),
-      GoRoute(
-        path: "/swap",
-        builder: (context, state) => SwapPage(),
       ),
       GoRoute(
         path: "/invest",

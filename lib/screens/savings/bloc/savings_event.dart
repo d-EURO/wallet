@@ -30,3 +30,7 @@ final class CollectInterest extends SavingsEvent {
 final class CompoundInterest extends SavingsEvent {
   const CompoundInterest();
 }
+
+final class WithdrawV1Submitted extends SavingsEvent {
+  const WithdrawV1Submitted();
+}

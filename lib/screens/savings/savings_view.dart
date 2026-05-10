@@ -31,9 +31,9 @@ class SavingsView extends StatelessWidget {
               SectionBalance(
                 balance: BigInt.parse(state.amount, radix: 16),
                 interestRate: BigInt.parse(state.interestRate, radix: 16),
-                collectedInterest:
-                    BigInt.parse(state.accruedInterest, radix: 16),
+                collectedInterest: BigInt.parse(state.accruedInterest, radix: 16),
                 isEnabled: state.isEnabled,
+                balanceV1: state.amountV1 != null ? BigInt.parse(state.amountV1!, radix: 16) : null,
               ),
               Expanded(
                 child: CustomScrollView(slivers: [
@@ -47,8 +47,7 @@ class SavingsView extends StatelessWidget {
                             padding: const EdgeInsets.all(20),
                             margin: const EdgeInsets.only(bottom: 20),
                             decoration: kContainerCardStyle,
-                            child:
-                                Row(mainAxisSize: MainAxisSize.max, children: [
+                            child: Row(mainAxisSize: MainAxisSize.max, children: [
                               Padding(
                                 padding: const EdgeInsets.only(right: 20),
                                 child: Icon(Icons.warning, color: Colors.amber),
@@ -58,8 +57,7 @@ class SavingsView extends StatelessWidget {
                           ),
                         BlocBuilder<TransactionHistoryCubit, List<Transaction>>(
                           bloc: transactionHistoryCubit,
-                          builder: (context, state) =>
-                              SectionTransactionHistory(
+                          builder: (context, state) => SectionTransactionHistory(
                             transactions: state,
                             walletAddress: walletAddress,
                             hasShowAll: state.length == 5,

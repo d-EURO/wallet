@@ -3,6 +3,7 @@ part of 'savings_bloc.dart';
 class SavingsState extends Equatable {
   const SavingsState({
     this.amount = "0",
+    this.amountV1,
     this.interestRate = "0",
     this.accruedInterest = "0",
     this.isEnabled = false,
@@ -12,6 +13,7 @@ class SavingsState extends Equatable {
   });
 
   final String amount;
+  final String? amountV1;
   final String interestRate;
   final String accruedInterest;
   final bool isEnabled;
@@ -27,6 +29,8 @@ class SavingsState extends Equatable {
     bool? isActivatingSavings,
     bool? isCollectingInterest,
     bool? isCached,
+    bool? removeV1,
+    String? amountV1,
   }) =>
       SavingsState(
         amount: amount ?? this.amount,
@@ -36,6 +40,7 @@ class SavingsState extends Equatable {
         isActivatingSavings: isActivatingSavings ?? this.isActivatingSavings,
         isCollectingInterest: isCollectingInterest ?? this.isCollectingInterest,
         isCached: isCached ?? this.isCached,
+        amountV1: removeV1 == true ? null : amountV1 ?? this.amountV1,
       );
 
   @override
@@ -46,6 +51,6 @@ class SavingsState extends Equatable {
         isEnabled,
         isActivatingSavings,
         isCollectingInterest,
-    isCached,
+        isCached,
       ];
 }

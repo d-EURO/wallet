@@ -113,7 +113,7 @@ class Ponder {
         txId: item.txHash,
         chainId: 1,
         senderAddress: address,
-        receiverAddress: savingsGatewayAddress,
+        receiverAddress: savingsGatewayV1Address,
         amount: item.amount,
         asset: dEUROAsset,
         type: item.txType,

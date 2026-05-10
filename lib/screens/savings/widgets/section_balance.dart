@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 
 class SectionBalance extends StatelessWidget {
   final BigInt balance;
+  final BigInt? balanceV1;
   final BigInt interestRate;
   final BigInt collectedInterest;
   final bool isEnabled;
@@ -24,6 +25,7 @@ class SectionBalance extends StatelessWidget {
     required this.interestRate,
     required this.collectedInterest,
     required this.isEnabled,
+    this.balanceV1,
   });
 
   @override
@@ -81,6 +83,30 @@ class SectionBalance extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    if (balanceV1 != null) ...[
+                      Text(
+                        "${S.of(context).savings_balance} V1",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white.withAlpha(153),
+                        ),
+                      ),
+                      HideAmountText(
+                        amount: balanceV1!,
+                        style: const TextStyle(
+                          fontSize: 35,
+                          color: Colors.white,
+                          fontFamily: "Satoshi Bold",
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      ActionButton(
+                        icon: Icons.arrow_forward,
+                        label: "${S.of(context).withdraw} v2",
+                        onPressed: () => context.read<SavingsBloc>().add(WithdrawV1Submitted()),
+                        buttonStyle: kBalanceBarActionButtonStyle,
+                      )
+                    ]
                   ],
                 ),
               ),
@@ -108,17 +134,14 @@ class SectionBalance extends StatelessWidget {
                         ActionButton(
                           icon: Icons.savings,
                           label: S.of(context).savings_enable,
-                          onPressed: () =>
-                              context.read<SavingsBloc>().add(EnableSavings()),
+                          onPressed: () => context.read<SavingsBloc>().add(EnableSavings()),
                           buttonStyle: kBalanceBarActionButtonStyle,
                         ),
                       ],
               ),
               Container(
-                margin: const EdgeInsets.only(
-                    left: 16, right: 16, bottom: 20, top: 36),
-                padding: const EdgeInsets.only(
-                    left: 16, right: 16, bottom: 20, top: 12),
+                margin: const EdgeInsets.only(left: 16, right: 16, bottom: 20, top: 36),
+                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20, top: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: const Color.fromARGB(255, 54, 65, 198),
@@ -157,26 +180,20 @@ class SectionBalance extends StatelessWidget {
                           ),
                           Spacer(),
                           ActionButton(
-                            customIcon:
-                                Icon(Icons.refresh, color: Colors.white),
+                            customIcon: Icon(Icons.refresh, color: Colors.white),
                             label: S.of(context).savings_reinvest,
                             onPressed: isEnabled
-                                ? () => context
-                                    .read<SavingsBloc>()
-                                    .add(CompoundInterest())
+                                ? () => context.read<SavingsBloc>().add(CompoundInterest())
                                 : null,
                             buttonStyle: kBalanceBarActionButtonStyle,
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 5),
                             child: ActionButton(
-                              customIcon:
-                                  CollectInterestIcon(color: Colors.white),
+                              customIcon: CollectInterestIcon(color: Colors.white),
                               label: S.of(context).collect_interest,
                               onPressed: isEnabled
-                                  ? () => context
-                                      .read<SavingsBloc>()
-                                      .add(CollectInterest())
+                                  ? () => context.read<SavingsBloc>().add(CollectInterest())
                                   : null,
                               buttonStyle: kBalanceBarActionButtonStyle,
                             ),

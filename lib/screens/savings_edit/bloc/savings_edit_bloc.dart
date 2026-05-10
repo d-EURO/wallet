@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
-import 'package:deuro_wallet/constants.dart';
 import 'package:deuro_wallet/generated/i18n.dart';
 import 'package:deuro_wallet/models/asset.dart';
 import 'package:deuro_wallet/models/blockchain.dart';
@@ -50,28 +49,21 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
 
   void _onAmountAdd(AmountChangedAdd event, Emitter<SavingsEditState> emit) {
     emit(state.copyWith(
-      amount: state.amount == '0'
-          ? event.amount.toString()
-          : '${state.amount}${event.amount}',
+      amount: state.amount == '0' ? event.amount.toString() : '${state.amount}${event.amount}',
     ));
   }
 
-  void _onAmountDecimal(
-      AmountChangedDecimal event, Emitter<SavingsEditState> emit) {
+  void _onAmountDecimal(AmountChangedDecimal event, Emitter<SavingsEditState> emit) {
     emit(state.copyWith(amount: '${state.amount.replaceAll('.', '')}.'));
   }
 
-  void _onAmountRemove(
-      AmountChangedDelete event, Emitter<SavingsEditState> emit) {
+  void _onAmountRemove(AmountChangedDelete event, Emitter<SavingsEditState> emit) {
     emit(state.copyWith(
-      amount: state.amount.length > 1
-          ? state.amount.substring(0, state.amount.length - 1)
-          : '0',
+      amount: state.amount.length > 1 ? state.amount.substring(0, state.amount.length - 1) : '0',
     ));
   }
 
-  Future<void> _onSubmitted(
-      SendSubmitted event, Emitter<SavingsEditState> emit) async {
+  Future<void> _onSubmitted(SendSubmitted event, Emitter<SavingsEditState> emit) async {
     emit(state.copyWith(status: SendStatus.inProgress));
 
     final currentAccount = _appStore.wallet.primaryAccount.primaryAddress;
@@ -81,19 +73,14 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
       return showModalBottomSheet(
           context: navigatorKey.currentContext!,
           builder: (_) => ErrorBottomSheet(
-              message: S.current.error_not_enough_money(
-                  state.blockchain.nativeSymbol, state.blockchain.name)));
+              message: S.current
+                  .error_not_enough_money(state.blockchain.nativeSymbol, state.blockchain.name)));
     }
 
     try {
-      final savings = getSavingsGateway(client);
+      final savings = getSavingsV2(client);
       final amount = parseFixed(state.amount, _asset.decimals);
       final priority = TransactionPriority.slow;
-
-      // final frontendGateway = getFrontendGateway(client);
-      // final frontendCode = Uint8List.fromList(sha256.convert(utf8.encode('wallet')).bytes);
-      // dev.log(bytesToHex(frontendCode));
-      // final txId = await frontendGateway.registerFrontendCode((frontendCode: frontendCode), credentials: _appStore.wallet.primaryAccount.primaryAddress);
 
       final transaction = Transaction(
         from: currentAccount.address,
@@ -106,17 +93,13 @@ class SavingsEditBloc extends Bloc<SavingsEditEvent, SavingsEditState> {
 
       final txId = await (isAdding
           ? savings.save(
-              (
-                amount: amount,
-                frontendCode: frontendCode,
-              ),
+              (amount: amount, compound: true),
               transaction: transaction,
               credentials: currentAccount,
             )
-          : savings.withdraw$2(
+          : savings.withdraw(
               (
                 amount: amount,
-                frontendCode: frontendCode,
                 target: currentAccount.address,
               ),
               transaction: transaction,

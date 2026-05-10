@@ -22,7 +22,6 @@ import 'package:deuro_wallet/screens/home/bloc/home_bloc.dart';
 import 'package:deuro_wallet/screens/restore_wallet/bloc/restore_wallet_cubit.dart';
 import 'package:deuro_wallet/screens/savings/bloc/savings_bloc.dart';
 import 'package:deuro_wallet/screens/settings/bloc/settings_bloc.dart';
-import 'package:deuro_wallet/screens/swap/bloc/swap_bloc.dart';
 import 'package:deuro_wallet/setup.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -111,9 +110,6 @@ void setupBlocs() {
 
   getIt.registerFactory(
       () => SavingsBloc(getIt<AppStore>(), getIt<CacheRepository>()));
-
-  getIt.registerFactory(
-      () => SwapBloc(getIt<AppStore>(), getIt<BalanceService>()));
 }
 
 Future<bool> _existsDatabaseFile() async =>
